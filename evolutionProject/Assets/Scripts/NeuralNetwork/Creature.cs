@@ -40,6 +40,9 @@ public class Creature : MonoBehaviour
     private Renderer renderer;
     private Color startColor;
 
+    public int numRaycasts = 5;
+    public float angleBetweenRaycasts = 30;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -69,93 +72,27 @@ public class Creature : MonoBehaviour
 
         ManageEnergy();
 
-        // This group of comments is for the old food detection system
-        // //use the FindClosestFood function to find the closest food object
-        // GameObject closestFood = FindClosestFood();
-
-        // //if food is found, set the relative x and z coordinates of the food to the agent
-        // if (closestFood != null)
-        // {
-        //         relativeFoodX = this.transform.position.x - closestFood.transform.position.x;
-        //         relativeFoodZ = this.transform.position.z - closestFood.transform.position.z;
-        // }
-
-        // //get the angle between the agents local rotation and the food
-        // float angle = Vector3.SignedAngle(transform.forward, new Vector3(relativeFoodX, 0, relativeFoodZ), Vector3.up);
-
-        // //get the distance between the agent and the food
-        // float distance = Mathf.Sqrt((Mathf.Pow(relativeFoodX, 2) + Mathf.Pow(relativeFoodZ, 2)));
-
-        // //Setup inputs for neural network
-        // //get the global rotation of the agent
-        // float [] inputsToNN = {relativeFoodX, relativeFoodZ, transform.rotation.eulerAngles.y};
-
-        //float [] inputsToNN ={(angle), distance/50};
-
-
-        // This section of code is for the new food detection system (Raycasts)
-        // Set up a variable to store the number of raycasts to use
-        int numRaycasts = 5;
-
-        // Set up a variable to store the angle between raycasts
-        float angleBetweenRaycasts = 30;
-
-        // Set up an array to store the distances to the food objects detected by the raycasts
-
-        // Use multiple raycasts to detect food objects
-        //RaycastHit hit;
-        //for (int i = 0; i < numRaycasts; i++)
-        //{
-        //    float angle = ((2 * i + 1 - numRaycasts) * angleBetweenRaycasts / 2);
-        //    // Rotate the direction of the raycast by the specified angle around the y-axis of the agent
-        //    //Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
-        //    Quaternion rotation = Quaternion.Euler(0, 0, angle);
-        //    Vector3 rayDirection = rotation * transform.up; // transform.forward * -1;
-        //    // Increase the starting point of the raycast by 0.1 units
-        //    Vector3 rayStart = transform.position + Vector3.up * 0.1f;
-        //    if (Physics.Raycast(rayStart, rayDirection, out hit, viewDistance))
-        //    {
-        //        // Draw a line representing the raycast in the scene view for debugging purposes
-        //        Debug.DrawRay(rayStart, rayDirection * hit.distance, Color.red);
-        //        if (hit.transform.gameObject.tag == "Food")
-        //        {
-        //            // Use the length of the raycast as the distance to the food object
-        //            distances[i] = hit.distance / viewDistance;
-
-        //        }
-        //        else
-        //        {
-        //            // If no food object is detected, set the distance to the maximum length of the raycast
-        //            distances[i] = 1;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Draw a line representing the raycast in the scene view for debugging purposes
-        //        Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red);
-        //        // If no food object is detected, set the distance to the maximum length of the raycast
-        //        distances[i] = 1;
-        //    }
-        //}
 
         RaycastHit2D hit;
         for (int i = 0; i < numRaycasts; i++)
         {
             float angle = ((2 * i + 1 - numRaycasts) * angleBetweenRaycasts / 2);
-            Quaternion rotation = Quaternion.Euler(0, 0, angle);
-            Vector3 rayDirection = rotation * transform.up;
 
-            // Calculate the offset from the center of the creature based on its scale and rotation
-            float offset = 0.5f * transform.localScale.y; // Adjust this value as needed
+            //float angle = (i / (float)(numRaycasts - 1) - 0.5f) * angleBetweenRaycasts;
+            Quaternion rotation = Quaternion.Euler(0, 0, angle + transform.eulerAngles.z);
+            Vector2 rayDirection = rotation * Vector2.up;
 
-            // Calculate the starting point of the raycast in front of the creature
-            Vector3 rayStart = transform.position + offset * rayDirection;
+            float offset = 0.3f * transform.localScale.y;
+            Vector2 rayStart = (Vector2)transform.position + offset * rayDirection;
+
+            Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
 
             hit = Physics2D.Raycast(rayStart, rayDirection, viewDistance);
 
             if (hit.collider != null)
             {
-                Debug.DrawLine(rayStart, rayDirection * hit.distance, Color.red);
+                Vector2 hitPoint = rayStart + rayDirection * hit.distance;
+                Debug.DrawLine(rayStart, hitPoint, Color.red);
                 if (hit.transform.gameObject.tag == "Food")
                 {
                     distances[i] = hit.distance / viewDistance;
@@ -167,7 +104,8 @@ public class Creature : MonoBehaviour
             }
             else
             {
-                Debug.DrawLine(rayStart, rayDirection * viewDistance, Color.red);
+                Vector2 endPoint = rayStart + rayDirection * viewDistance;
+                Debug.DrawLine(rayStart, endPoint, Color.red);
                 distances[i] = 1;
             }
         }
@@ -273,78 +211,17 @@ public class Creature : MonoBehaviour
         nn.MutateNetwork(mutationAmount, mutationChance);
     }
 
-    //This function was used for the old input system (relative food position and angle)
-    GameObject FindClosestFood()
-    {
-        GameObject closestFood = null;
-        float agentX;
-        float agentY;
-        float foodX = 0;
-        float foodY = 0;
-
-        float minFoodDistance = -1;
-        float foodDistance = 0;
-        int minFoodIndex = -1;
-        bool foodInRange = false;
-
-        agentX = this.transform.position.x;
-        agentY = this.transform.position.y;
-
-        //TODO: dynamically change the size of the sphere cast until it finds food to increase performance
-
-        //use a sphere cast to find all food in range (determined by viewDistance) of the agent and add them to a list of edible food.
-        //this helps optimize the code by not having to check every food object in the scene.
-        if (Random.value * 100 < 5)
-        {
-            edibleFoodList.Clear();
-            Collider[] hitColliders = Physics.OverlapSphere(this.transform.position, viewDistance);
-            foreach (var hit in hitColliders)
-            {
-                if (hit.gameObject.tag == "Food")
-                {
-                    edibleFoodList.Add(hit.gameObject);
-                }
-            }
-        }
-
-        //find closest food in range of agent
-        if (Random.value * 100 < 50)
-        {
-            for (int i = 0; i < edibleFoodList.Count; i++)
-            {
-                if (edibleFoodList[i] != null)
-                {
-                    foodX = edibleFoodList[i].transform.position.x;
-                    foodY = edibleFoodList[i].transform.position.z;
-
-                    foodDistance = Mathf.Sqrt((Mathf.Pow(foodX - agentX, 2) + Mathf.Pow(foodY - agentY, 2)));
-                    if (foodDistance < minFoodDistance || minFoodDistance < 0)
-                    {
-                        minFoodDistance = foodDistance;
-                        minFoodIndex = i;
-                        if (minFoodDistance < viewDistance)
-                        {
-                            closestFood = edibleFoodList[i];
-                            foodInRange = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        return (closestFood);
-    }
-
     public void Reproduce()
     {
         //replicate
         for (int i = 0; i < numberOfChildren; i++) // I left this here so I could possibly change the number of children a parent has at a time.
         {
             //create a new agent, and set its position to the parent's position + a random offset in the x and z directions (so they don't all spawn on top of each other)
+            
             GameObject child = Instantiate(agentPrefab, new Vector3(
                 (float)this.transform.position.x + Random.Range(-10, 11),
-                0.75f,
-                (float)this.transform.position.y + Random.Range(-10, 11)),
+                (float)this.transform.position.y + Random.Range(-10, 11),
+                0.0f),
                 Quaternion.identity);
 
             //child.SetActive = true;

@@ -2,14 +2,18 @@ using UnityEngine;
 
 public class NN : MonoBehaviour
 {
-    int[] networkShape = { 5, 32, 2 };
+    //int numInputs = 5; //default
+    int[] networkShape = new int[] { 5, 32, 2 };
     public Layer[] layers;
-
+    private Creature creatureRef;
     // Awake is called when the script instance is being loaded.
     // Start is called before the first frame update.
     // Awake gets called before Start which is why we use Awake here
     public void Awake()
     {
+        //creatureRef = GetComponent<Creature>();
+        //int numInputs = creatureRef.numRaycasts;
+        //networkShape[0] = numInputs;
         layers = new Layer[networkShape.Length - 1];
 
         for (int i = 0; i < layers.Length; i++)
