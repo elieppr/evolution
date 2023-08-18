@@ -41,8 +41,8 @@ public class Fish : MonoBehaviour
     private Renderer renderer;
     private Color startColor;
 
-    public int numRaycasts = 5;
-    public float angleBetweenRaycasts = 30;
+    public int numRaycasts = 10;
+    public float angleBetweenRaycasts = 36;
 
     public GameObject raycastVisualizationPrefab;
 
@@ -52,7 +52,7 @@ public class Fish : MonoBehaviour
     {
         nn = gameObject.GetComponent<FishNN>();
         movement = gameObject.GetComponent<FishMovement>();
-        distances = new float[12];
+        distances = new float[10];
 
         //this.name = "Agent";
 
@@ -95,7 +95,7 @@ public class Fish : MonoBehaviour
 
             Vector2 endPoint;
             distances[i] = 1;
-            distances[i+6] = 1;
+            //distances[i+6] = 1;
 
             if (hit.collider != null)
             {
@@ -106,9 +106,9 @@ public class Fish : MonoBehaviour
                 {
                     distances[i] = hit.distance / viewDistance;
                 }
-                if (hit.transform.gameObject.tag == "FishFood")
+                else if (hit.transform.gameObject.tag == "FishFood")
                 {
-                    distances[i+6] = hit.distance / viewDistance;
+                    distances[i] = -1 * hit.distance / viewDistance;
                 }
             }
             else

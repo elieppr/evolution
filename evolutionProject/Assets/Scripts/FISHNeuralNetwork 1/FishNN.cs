@@ -3,7 +3,7 @@ using UnityEngine;
 public class FishNN : MonoBehaviour
 {
     //int numInputs = 5; //default
-    int[] networkShape = new int[] { 12, 16, 2 };
+    int[] networkShape = new int[] { 10, 64, 16, 2 };
     public Layer[] layers;
     private Creature creatureRef;
     // Awake is called when the script instance is being loaded.
@@ -105,13 +105,13 @@ public class FishNN : MonoBehaviour
         public void Activation()
         {
             // //leaky relu function
-            // for(int i = 0; i < nodeArray.Length; i++)
-            // {
-            //     if(nodeArray[i] < 0)
-            //     {
-            //         nodeArray[i] = nodeArray[i]/10;
-            //     }
-            // }
+            for (int i = 0; i < nodeArray.Length; i++)
+            {
+                if (nodeArray[i] < 0)
+                {
+                    nodeArray[i] = nodeArray[i] / 10;
+                }
+            }
 
 
             // //sigmoid function
@@ -127,13 +127,13 @@ public class FishNN : MonoBehaviour
             //}
 
             //relu function
-            for (int i = 0; i < nodeArray.Length; i++)
-            {
-                if (nodeArray[i] < 0)
-                {
-                    nodeArray[i] = 0;
-                }
-            }
+            //for (int i = 0; i < nodeArray.Length; i++)
+            //{
+            //    if (nodeArray[i] < 0)
+            //    {
+            //        nodeArray[i] = 0;
+            //    }
+            //}
         }
 
         //This is used to randomly modify the weights and biases for the Evolution Sim and Genetic Algorithm.

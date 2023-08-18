@@ -17,7 +17,7 @@ public class Creature : MonoBehaviour
     public float reproductionEnergyThreshold = 10;
     public float FB = 0;
     public float LR = 0;
-    public int numberOfChildren = 1;
+    public int numberOfChildren = 5;
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
@@ -36,7 +36,7 @@ public class Creature : MonoBehaviour
     public bool isDead = false;
 
 
-    public float fadeDuration = 3.0f; // Duration in seconds for fading
+    public float fadeDuration = 1.5f; // Duration in seconds for fading
     private Renderer renderer;
     private Color startColor;
 
@@ -136,12 +136,7 @@ public class Creature : MonoBehaviour
         // Setup inputs for the neural network
         float[] inputsToNN = distances;
 
-        for (int i = 0; i < distances.Length; i++)
-        {
-            Debug.Log("        " + distances[i]);
-        }
         
-
         // Get outputs from the neural network
         float[] outputsFromNN = nn.Brain(inputsToNN);
 
@@ -149,8 +144,7 @@ public class Creature : MonoBehaviour
         FB = outputsFromNN[0];
         LR = outputsFromNN[1];
 
-        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAA " + FB + ", " + LR);
-
+        
         //if the agent is the user, use the inputs from the user instead of the neural network
         if (isUser)
         {

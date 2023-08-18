@@ -12,7 +12,7 @@ public class FoodSpawner : MonoBehaviour
     void Start()
     {
         // Spawn food at random locations at the start of the game
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 300; i++)
         {
             SpawnFood();
         }
@@ -32,8 +32,8 @@ public class FoodSpawner : MonoBehaviour
 
     void SpawnFood()
     {
-        int x = Random.Range(-100, 101) * floorScale;
-        int y = Random.Range(-100, 101) * floorScale;
+        int x = Random.Range(-200, 201) * floorScale;
+        int y = Random.Range(-150, 151) * floorScale;
         Instantiate(myPrefab, new Vector3((float)x, (float)y, 0.0f), Quaternion.identity);
     }
 }

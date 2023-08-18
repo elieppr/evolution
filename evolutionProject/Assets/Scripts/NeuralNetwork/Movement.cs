@@ -13,7 +13,7 @@ public class Movement : MonoBehaviour
     private bool hasController = false;
     private Vector3 playerVelocity;
     //private float gravityValue = -9.81f;
-    public float speed = 10.0F;
+    public float speed = 50.0F;
     public float rotateSpeed = 10.0F;
     public float FB = 0;
     public float LR = 0;
@@ -32,7 +32,7 @@ public class Movement : MonoBehaviour
     {
         //clamp the values of LR and FB
         LR = Mathf.Clamp(LR, -1, 1);
-        FB = Mathf.Clamp(FB, 0.1f, 2);
+        FB = Mathf.Clamp(FB, 0.1f, 3);
 
         //move the agent
         if (!creature.isDead)

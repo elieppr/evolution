@@ -3,7 +3,7 @@ using UnityEngine;
 public class NN : MonoBehaviour
 {
     //int numInputs = 5; //default
-    int[] networkShape = new int[] { 10, 64, 32, 2 };
+    int[] networkShape = new int[] { 10, 64, 2 };
     public Layer[] layers;
     private Creature creatureRef;
     // Awake is called when the script instance is being loaded.
@@ -40,11 +40,12 @@ public class NN : MonoBehaviour
             else if (i == layers.Length - 1)
             {
                 layers[i].Forward(layers[i - 1].nodeArray);
+                //layers[i].Activation();
             }
             else
             {
                 layers[i].Forward(layers[i - 1].nodeArray);
-                layers[i].Activation();
+                //layers[i].Activation();
             }
         }
         
