@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class NN : MonoBehaviour
+public class FishNN : MonoBehaviour
 {
     //int numInputs = 5; //default
-    int[] networkShape = new int[] { 10, 64, 32, 2 };
+    int[] networkShape = new int[] { 12, 16, 2 };
     public Layer[] layers;
     private Creature creatureRef;
     // Awake is called when the script instance is being loaded.
@@ -29,7 +29,6 @@ public class NN : MonoBehaviour
     //This function is used to feed forward the inputs through the network, and return the output, which is the decision of the network, in this case, the direction to move in.
     public float[] Brain(float[] inputs)
     {
-        
         for (int i = 0; i < layers.Length; i++)
         {
             if (i == 0)
@@ -105,21 +104,21 @@ public class NN : MonoBehaviour
         //This function is the activation function for the neural network uncomment the one you want to use.
         public void Activation()
         {
-            //leaky relu function
-            for (int i = 0; i < nodeArray.Length; i++)
-            {
-                if (nodeArray[i] < 0)
-                {
-                    nodeArray[i] = nodeArray[i] / 10;
-                }
-            }
+            // //leaky relu function
+            // for(int i = 0; i < nodeArray.Length; i++)
+            // {
+            //     if(nodeArray[i] < 0)
+            //     {
+            //         nodeArray[i] = nodeArray[i]/10;
+            //     }
+            // }
 
 
-            //sigmoid function
-            //for (int i = 0; i < nodeArray.Length; i++)
-            //{
-            //    nodeArray[i] = 1 / (1 + Mathf.Exp(-nodeArray[i]));
-            //}
+            // //sigmoid function
+            // for(int i = 0; i < nodeArray.Length; i++)
+            // {
+            //     nodeArray[i] = 1/(1 + Mathf.Exp(-nodeArray[i]));
+            // }
 
             //tanh function
             //for (int i = 0; i < nodeArray.Length; i++)
@@ -128,13 +127,13 @@ public class NN : MonoBehaviour
             //}
 
             //relu function
-            //for (int i = 0; i < nodeArray.Length; i++)
-            //{
-            //    if (nodeArray[i] < 0)
-            //    {
-            //        nodeArray[i] = 0;
-            //    }
-            //}
+            for (int i = 0; i < nodeArray.Length; i++)
+            {
+                if (nodeArray[i] < 0)
+                {
+                    nodeArray[i] = 0;
+                }
+            }
         }
 
         //This is used to randomly modify the weights and biases for the Evolution Sim and Genetic Algorithm.

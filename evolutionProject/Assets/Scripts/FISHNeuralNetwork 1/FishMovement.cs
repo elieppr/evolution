@@ -7,7 +7,7 @@ using System.Linq;
 // using MathNet.Numerics;
 // using MathNet.Numerics.LinearAlgebra;
 
-public class Movement : MonoBehaviour
+public class FishMovement : MonoBehaviour
 {
     public Rigidbody2D controller;
     private bool hasController = false;
@@ -19,12 +19,12 @@ public class Movement : MonoBehaviour
     public float LR = 0;
 
     //private ObjectTracker objectTracker;
-    private Creature creature;
+    private Fish creature;
 
     void Awake()
     {
         //objectTracker = FindObjectOfType<ObjectTracker>();
-        creature = GetComponent<Creature>();
+        creature = GetComponent<Fish>();
         controller = GetComponent<Rigidbody2D>();
     }
 
@@ -32,7 +32,8 @@ public class Movement : MonoBehaviour
     {
         //clamp the values of LR and FB
         LR = Mathf.Clamp(LR, -1, 1);
-        FB = Mathf.Clamp(FB, 0.1f, 2);
+        FB = Mathf.Clamp(FB, 0.2f, 2);
+        
 
         //move the agent
         if (!creature.isDead)

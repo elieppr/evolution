@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Creature : MonoBehaviour
+public class Fish : MonoBehaviour
 {
     public bool mutateMutations = true;
     public GameObject agentPrefab;
@@ -15,18 +15,19 @@ public class Creature : MonoBehaviour
     public float reproductionEnergyGained = 1;
     public float reproductionEnergy = 0;
     public float reproductionEnergyThreshold = 10;
+    //public float timeUntilReproduce = 50;
     public float FB = 0;
     public float LR = 0;
     public int numberOfChildren = 1;
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
-    public float[] distances = new float[6];
+    public float[] distances = new float[12];
 
     public float mutationAmount = 0.8f;
     public float mutationChance = 0.2f;
-    public NN nn;
-    public Movement movement;
+    public FishNN nn;
+    public FishMovement movement;
 
     float relativeFoodX;
     float relativeFoodY;
@@ -40,8 +41,8 @@ public class Creature : MonoBehaviour
     private Renderer renderer;
     private Color startColor;
 
-    public int numRaycasts = 10;
-    public float angleBetweenRaycasts = 36;
+    public int numRaycasts = 5;
+    public float angleBetweenRaycasts = 30;
 
     public GameObject raycastVisualizationPrefab;
 
@@ -49,9 +50,9 @@ public class Creature : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        nn = gameObject.GetComponent<NN>();
-        movement = gameObject.GetComponent<Movement>();
-        distances = new float[10];
+        nn = gameObject.GetComponent<FishNN>();
+        movement = gameObject.GetComponent<FishMovement>();
+        distances = new float[12];
 
         //this.name = "Agent";
 
@@ -69,7 +70,7 @@ public class Creature : MonoBehaviour
             MutateCreature();
             this.transform.localScale = new Vector3(size, size, 0); //////////////////
             isMutated = true;
-            energy = 20;
+            //energy = 20;
         }
 
         ManageEnergy();
@@ -91,56 +92,35 @@ public class Creature : MonoBehaviour
 
             hit = Physics2D.Raycast(rayStart, rayDirection, viewDistance);
             
-            //GameObject raycastVisualization;
-            //LineRenderer lineRenderer = raycastVisualizationPrefab.GetComponent<LineRenderer>();
-            //if (numRays < numRaycasts)
-            //{
-            //    raycastVisualization = Instantiate(raycastVisualizationPrefab, rayStart, Quaternion.identity);
-            //    //lineRenderer = raycastVisualization.GetComponent<LineRenderer>();
-            //    numRays++;
-            //}
-            
 
             Vector2 endPoint;
+            distances[i] = 1;
+            distances[i+6] = 1;
 
             if (hit.collider != null)
             {
                 Vector2 hitPoint = rayStart + rayDirection * hit.distance;
                 endPoint = hitPoint;
                 Debug.DrawLine(rayStart, hitPoint, Color.red);
-                if (hit.transform.gameObject.tag == "FoodAI")
+                if (hit.transform.gameObject.tag == "Agent")
                 {
                     distances[i] = hit.distance / viewDistance;
                 }
-                else
+                if (hit.transform.gameObject.tag == "FishFood")
                 {
-                    distances[i] = 1;
+                    distances[i+6] = hit.distance / viewDistance;
                 }
             }
             else
             {
                 endPoint = rayStart + rayDirection * viewDistance;
                 Debug.DrawLine(rayStart, endPoint, Color.red);
-                distances[i] = 1;
             }
-            // Instantiate raycast visualization GameObject
-            //GameObject raycastVisualization = Instantiate(raycastVisualizationPrefab, rayStart, Quaternion.identity);
-            //LineRenderer lineRenderer = raycastVisualization.GetComponent<LineRenderer>();
-            //lineRenderer.SetPosition(0, rayStart);
-            //lineRenderer.SetPosition(1, endPoint); // or viewDistance for no hit
             
-            
-        }
-
-
-        // Setup inputs for the neural network
-        float[] inputsToNN = distances;
-
-        for (int i = 0; i < distances.Length; i++)
-        {
-            Debug.Log("        " + distances[i]);
         }
         
+        // Setup inputs for the neural network
+        float[] inputsToNN = distances;
 
         // Get outputs from the neural network
         float[] outputsFromNN = nn.Brain(inputsToNN);
@@ -148,8 +128,6 @@ public class Creature : MonoBehaviour
         //Store the outputs from the neural network in variables
         FB = outputsFromNN[0];
         LR = outputsFromNN[1];
-
-        Debug.Log("AAAAAAAAAAAAAAAAAAAAAAAA " + FB + ", " + LR);
 
         //if the agent is the user, use the inputs from the user instead of the neural network
         if (isUser)
@@ -165,16 +143,38 @@ public class Creature : MonoBehaviour
     //this function gets called whenever the agent collides with a trigger. (Which in this case is the food)
     void OnCollisionEnter2D(Collision2D col)
     {
-        
+
         //if the agent collides with a food object, it will eat it and gain energy.
-        if (col.gameObject.tag == "Food" || col.gameObject.tag == "FoodAI" && canEat)
+        if (col.gameObject.tag == "FishFood" && canEat)
         {
-            
+
             energy += energyGained;
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
         }
     }
+
+
+    //public void ManageEnergy()
+    //{
+    //    elapsed += Time.deltaTime;
+    //    lifeSpan += Time.deltaTime;
+
+    //    if (lifeSpan > timeUntilReproduce)
+    //    {
+    //        //List[] list = GameObject.FindGameObjectsWithTag("FoodAI");
+    //        // if there are no agents in the scene, spawn one at a random location. 
+    //        // This is to ensure that there is always at least one agent in the scene.
+    //        //if (agentList.Length < 5)
+    //        //{
+    //        //    SpawnCreature();
+    //        //}
+    //        int num = Random.Range(1, 10);
+    //        if (num < 8) { Reproduce(); }
+
+    //        lifeSpan = 0;
+    //    }
+    //}
 
     public void ManageEnergy()
     {
@@ -203,7 +203,7 @@ public class Creature : MonoBehaviour
             //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3.5f, this.transform.position.z);
             StartCoroutine(FadeOutAndDestroy());
             Destroy(this.gameObject, 3);
-            GetComponent<Movement>().enabled = false;
+            GetComponent<FishMovement>().enabled = false;
         }
 
     }
@@ -256,9 +256,11 @@ public class Creature : MonoBehaviour
 
             //child.SetActive = true;
             //copy the parent's neural network to the child
-            child.GetComponent<NN>().layers = GetComponent<NN>().copyLayers();
+            child.GetComponent<FishNN>().layers = GetComponent<FishNN>().copyLayers();
+            child.GetComponent<Fish>().lifeSpan = 0;
+            child.GetComponent<Fish>().elapsed = 0;
         }
-        reproductionEnergy = 0;
+        //reproductionEnergy = 0;
 
     }
 }
