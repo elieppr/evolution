@@ -1162,15 +1162,15 @@ MonoBehaviour:
   isUser: 0
   canEat: 1
   viewDistance: 25
-  size: 25
+  size: 20
   energy: 20
-  energyGained: 10
+  energyGained: 5
   reproductionEnergyGained: 1
   reproductionEnergy: 0
-  reproductionEnergyThreshold: 6
+  reproductionEnergyThreshold: 5
   FB: 0
   LR: 0
-  numberOfChildren: 1
+  numberOfChildren: 3
   lifeSpan: 0
   distances:
   - 0
