@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - FoodAI
   - FishFood
+  - Pheromone
+  - FishFoodCollider
   layers:
   - Default
   - TransparentFX
