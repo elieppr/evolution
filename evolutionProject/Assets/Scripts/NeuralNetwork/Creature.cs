@@ -45,6 +45,8 @@ public class Creature : MonoBehaviour
 
     public GameObject raycastVisualizationPrefab;
 
+    public Fish fish;
+
     private int numRays = 0;
     // Start is called before the first frame update
     void Awake()
@@ -52,7 +54,7 @@ public class Creature : MonoBehaviour
         nn = gameObject.GetComponent<NN>();
         movement = gameObject.GetComponent<Movement>();
         distances = new float[10];
-
+        //fish = gameObject.GetComponent<Fish>();
         //this.name = "Agent";
 
         renderer = GetComponent<Renderer>();
@@ -159,11 +161,23 @@ public class Creature : MonoBehaviour
     //this function gets called whenever the agent collides with a trigger. (Which in this case is the food)
     void OnCollisionEnter2D(Collision2D col)
     {
-        
+
         //if the agent collides with a food object, it will eat it and gain energy.
-        if (col.gameObject.tag == "Food" || col.gameObject.tag == "FoodAI" && canEat)
+        if (col.gameObject.tag == "Food" && canEat)
         {
-            
+            energy += energyGained;
+            reproductionEnergy += reproductionEnergyGained;
+            Destroy(col.gameObject);
+        }
+        if (col.gameObject.tag == "FoodAI" && canEat)
+        {
+            fish = col.gameObject.GetComponent<Fish>();
+
+            if (fish.lives > 1)
+            {
+                fish.lives--;
+                return;
+            }
             energy += energyGained;
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);

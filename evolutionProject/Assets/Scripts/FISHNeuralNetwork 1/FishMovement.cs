@@ -31,8 +31,8 @@ public class FishMovement : MonoBehaviour
     public void Move(float FB, float LR)
     {
         //clamp the values of LR and FB
-        LR = Mathf.Clamp(LR, -1, 1);
-        FB = Mathf.Clamp(FB, 0.2f, 2);
+        //LR = Mathf.Clamp(LR, -1, 1);
+        //FB = Mathf.Clamp(FB, 0.2f, 2);
         
 
         //move the agent

@@ -22,7 +22,7 @@ public class Fish : MonoBehaviour
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
-    public float[] distances = new float[12];
+    public float[] distances = new float[20];
 
     public float mutationAmount = 0.8f;
     public float mutationChance = 0.2f;
@@ -41,8 +41,13 @@ public class Fish : MonoBehaviour
     private Renderer renderer;
     private Color startColor;
 
-    public int numRaycasts = 10;
-    public float angleBetweenRaycasts = 36;
+    public int numRaycasts = 18;
+    public float angleBetweenRaycasts = 10;
+
+    public PheromoneController pheromoneController;
+    public float maxPheromone = 0;
+
+    public int lives = 2;
 
     public GameObject raycastVisualizationPrefab;
 
@@ -52,8 +57,9 @@ public class Fish : MonoBehaviour
     {
         nn = gameObject.GetComponent<FishNN>();
         movement = gameObject.GetComponent<FishMovement>();
-        distances = new float[10];
-
+        pheromoneController = gameObject.GetComponent<PheromoneController>();
+        distances = new float[20];
+        
         //this.name = "Agent";
 
         renderer = GetComponent<Renderer>();
@@ -106,7 +112,7 @@ public class Fish : MonoBehaviour
                 {
                     distances[i] = hit.distance / viewDistance;
                 }
-                else if (hit.transform.gameObject.tag == "FishFood")
+                else if (hit.transform.gameObject.tag == "FishFoodCollider")
                 {
                     distances[i] = -1 * hit.distance / viewDistance;
                 }
@@ -118,7 +124,14 @@ public class Fish : MonoBehaviour
             }
             
         }
-        
+
+        // get pheromone inputs
+        float maxDistx = pheromoneController.maxDistX;
+        float maxDisty = pheromoneController.maxDistY;
+
+        distances[numRaycasts] = maxDistx;
+        distances[numRaycasts + 1] = maxDisty;
+
         // Setup inputs for the neural network
         float[] inputsToNN = distances;
 
@@ -201,22 +214,49 @@ public class Fish : MonoBehaviour
         {
             //this.transform.Rotate(0, 0, 180);
             //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3.5f, this.transform.position.z);
-            StartCoroutine(FadeOutAndDestroy());
-            Destroy(this.gameObject, 3);
-            GetComponent<FishMovement>().enabled = false;
+            //StartCoroutine(FadeOutAndDestroy());
+            //Destroy(this.gameObject, 3);
+            //GetComponent<FishMovement>().enabled = false;
+            StartCoroutine(Die());
         }
 
     }
 
+    private IEnumerator Die()
+    {
+        // Turn the fish grey
+        renderer.material.color = Color.grey;
+
+        // Stop moving
+        FishMovement fishMovement = GetComponent<FishMovement>();
+        fishMovement.enabled = false;
+
+        fishMovement.speed = 0;
+        fishMovement.rotateSpeed = 0;
+
+        gameObject.tag = "Food";
+
+
+        // Wait for 4 seconds
+        yield return new WaitForSeconds(2f);
+
+        // Start fading out and destroy
+        StartCoroutine(FadeOutAndDestroy());
+    }
+
     private IEnumerator FadeOutAndDestroy()
     {
+        Material material = renderer.material;
+        Color startColor = material.color;
+        Color transparentColor = new Color(startColor.r, startColor.g, startColor.b, 0);
+
         float elapsedTime = 0;
 
         while (elapsedTime < fadeDuration)
         {
             float normalizedTime = elapsedTime / fadeDuration;
-            Color currentColor = Color.Lerp(startColor, new Color(startColor.r, startColor.g, startColor.b, 0), normalizedTime);
-            renderer.material.color = currentColor;
+            Color currentColor = Color.Lerp(startColor, transparentColor, normalizedTime);
+            material.color = currentColor;
 
             elapsedTime += Time.deltaTime;
             yield return null;

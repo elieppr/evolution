@@ -34,6 +34,7 @@ public class FoodSpawner : MonoBehaviour
     {
         int x = Random.Range(-200, 201) * floorScale;
         int y = Random.Range(-150, 151) * floorScale;
-        Instantiate(myPrefab, new Vector3((float)x, (float)y, 0.0f), Quaternion.identity);
+        GameObject food = Instantiate(myPrefab, new Vector3((float)x, (float)y, 0.0f), Quaternion.identity);
+        food.SetActive(true);
     }
 }
