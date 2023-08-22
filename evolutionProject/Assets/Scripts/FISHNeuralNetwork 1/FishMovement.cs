@@ -13,8 +13,8 @@ public class FishMovement : MonoBehaviour
     private bool hasController = false;
     private Vector3 playerVelocity;
     //private float gravityValue = -9.81f;
-    public float speed = 10.0F;
-    public float rotateSpeed = 10.0F;
+    public float speed = 15.0F;
+    public float rotateSpeed = 15.0F;
     public float FB = 0;
     public float LR = 0;
 
@@ -31,15 +31,16 @@ public class FishMovement : MonoBehaviour
     public void Move(float FB, float LR)
     {
         //clamp the values of LR and FB
-        //LR = Mathf.Clamp(LR, -1, 1);
-        //FB = Mathf.Clamp(FB, 0.2f, 2);
-        
+        LR = Mathf.Clamp(LR, -1, 1);
+        FB = Mathf.Clamp(FB, 0.2f, 2);
+
 
         //move the agent
         if (!creature.isDead)
         {
             // Rotate around y - axis
-            transform.Rotate(0, 0, LR * rotateSpeed * -1); 
+            transform.Rotate(0, 0, LR * rotateSpeed * -1);
+            //transform.Rotate(0, 0, LR * -1);
 
             // Move forward / backward
             Vector3 forward = transform.up;
@@ -48,7 +49,8 @@ public class FishMovement : MonoBehaviour
             Vector3 facingDirection = transform.up;
             // Move the creature one unit in the facing direction
             transform.position += facingDirection * speed * Time.deltaTime * FB;
-            
+            //transform.position += facingDirection * Time.deltaTime * FB;
+
         }
 
 

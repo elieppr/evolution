@@ -37,7 +37,7 @@ public class Fish : MonoBehaviour
     public bool isDead = false;
 
 
-    public float fadeDuration = 3.0f; // Duration in seconds for fading
+    public float fadeDuration = 0.0f; // Duration in seconds for fading
     private Renderer renderer;
     private Color startColor;
 
@@ -47,19 +47,23 @@ public class Fish : MonoBehaviour
     public PheromoneController pheromoneController;
     public float maxPheromone = 0;
 
-    public int lives = 2;
+    public int lives = 1;
 
     public GameObject raycastVisualizationPrefab;
 
     private int numRays = 0;
+
+    public Counter counter;
     // Start is called before the first frame update
     void Awake()
     {
         nn = gameObject.GetComponent<FishNN>();
         movement = gameObject.GetComponent<FishMovement>();
         pheromoneController = gameObject.GetComponent<PheromoneController>();
-        distances = new float[20];
+        distances = new float[18];
+
         
+
         //this.name = "Agent";
 
         renderer = GetComponent<Renderer>();
@@ -126,11 +130,11 @@ public class Fish : MonoBehaviour
         }
 
         // get pheromone inputs
-        float maxDistx = pheromoneController.maxDistX;
-        float maxDisty = pheromoneController.maxDistY;
+        ////float maxDistx = pheromoneController.maxDistX;
+        ////float maxDisty = pheromoneController.maxDistY;
 
-        distances[numRaycasts] = maxDistx;
-        distances[numRaycasts + 1] = maxDisty;
+        ////distances[numRaycasts] = maxDistx;
+        ////distances[numRaycasts + 1] = maxDisty;
 
         // Setup inputs for the neural network
         float[] inputsToNN = distances;
@@ -164,6 +168,8 @@ public class Fish : MonoBehaviour
             energy += energyGained;
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
+            counter.FFoodDecrementCounter();
+            
         }
     }
 
@@ -204,7 +210,10 @@ public class Fish : MonoBehaviour
             if (reproductionEnergy >= reproductionEnergyThreshold)
             {
                 reproductionEnergy = 0;
-                Reproduce();
+                if (counter.fish < 100)
+                {
+                    Reproduce();
+                }
             }
         }
 
@@ -217,32 +226,35 @@ public class Fish : MonoBehaviour
             //StartCoroutine(FadeOutAndDestroy());
             //Destroy(this.gameObject, 3);
             //GetComponent<FishMovement>().enabled = false;
-            StartCoroutine(Die());
+            //StartCoroutine(FadeOutAndDestroy());
+            counter.FishDecrementCounter();
+            Destroy(gameObject);
+            
         }
 
     }
 
-    private IEnumerator Die()
-    {
-        // Turn the fish grey
-        renderer.material.color = Color.grey;
+    //private IEnumerator Die()
+    //{
+    //    // Turn the fish grey
+    //    renderer.material.color = Color.grey;
 
-        // Stop moving
-        FishMovement fishMovement = GetComponent<FishMovement>();
-        fishMovement.enabled = false;
+    //    // Stop moving
+    //    FishMovement fishMovement = GetComponent<FishMovement>();
+    //    fishMovement.enabled = false;
 
-        fishMovement.speed = 0;
-        fishMovement.rotateSpeed = 0;
+    //    fishMovement.speed = 0;
+    //    fishMovement.rotateSpeed = 0;
 
-        gameObject.tag = "Food";
+    //    gameObject.tag = "Food";
 
 
-        // Wait for 4 seconds
-        yield return new WaitForSeconds(2f);
+    //    // Wait for 4 seconds
+    //    //yield return new WaitForSeconds(2f);
 
-        // Start fading out and destroy
-        StartCoroutine(FadeOutAndDestroy());
-    }
+    //    // Start fading out and destroy
+    //    StartCoroutine(FadeOutAndDestroy());
+    //}
 
     private IEnumerator FadeOutAndDestroy()
     {
@@ -263,7 +275,9 @@ public class Fish : MonoBehaviour
         }
 
         // Once fading is complete, destroy the creature
+        counter.fish--;
         Destroy(gameObject);
+        
     }
 
     private void MutateCreature()
@@ -299,6 +313,7 @@ public class Fish : MonoBehaviour
             child.GetComponent<FishNN>().layers = GetComponent<FishNN>().copyLayers();
             child.GetComponent<Fish>().lifeSpan = 0;
             child.GetComponent<Fish>().elapsed = 0;
+            counter.FishIncrementCounter();
         }
         //reproductionEnergy = 0;
 

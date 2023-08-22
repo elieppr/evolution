@@ -47,6 +47,8 @@ public class Creature : MonoBehaviour
 
     public Fish fish;
 
+    public Counter counter;
+
     private int numRays = 0;
     // Start is called before the first frame update
     void Awake()
@@ -54,6 +56,7 @@ public class Creature : MonoBehaviour
         nn = gameObject.GetComponent<NN>();
         movement = gameObject.GetComponent<Movement>();
         distances = new float[10];
+        
         //fish = gameObject.GetComponent<Fish>();
         //this.name = "Agent";
 
@@ -78,6 +81,9 @@ public class Creature : MonoBehaviour
 
 
         RaycastHit2D hit;
+        List<float> hitDistances = new List<float>();
+        //LayerMask obstacleLayerMask = LayerMask.GetMask("Default", "Penguin", "FishFood"); // Add layers as needed
+        LayerMask obstacleLayerMask = LayerMask.GetMask("Fish");
         for (int i = 0; i < numRaycasts; i++)
         {
             float angle = ((2 * i + 1 - numRaycasts) * angleBetweenRaycasts / 2);
@@ -91,8 +97,8 @@ public class Creature : MonoBehaviour
 
             //Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
 
-            hit = Physics2D.Raycast(rayStart, rayDirection, viewDistance);
-            
+            //hit = Physics2D.Raycast(rayStart, rayDirection, viewDistance);
+            hit = Physics2D.Raycast(rayStart, rayDirection, viewDistance, obstacleLayerMask);
             //GameObject raycastVisualization;
             //LineRenderer lineRenderer = raycastVisualizationPrefab.GetComponent<LineRenderer>();
             //if (numRays < numRaycasts)
@@ -101,7 +107,7 @@ public class Creature : MonoBehaviour
             //    //lineRenderer = raycastVisualization.GetComponent<LineRenderer>();
             //    numRays++;
             //}
-            
+
 
             Vector2 endPoint;
 
@@ -110,7 +116,7 @@ public class Creature : MonoBehaviour
                 Vector2 hitPoint = rayStart + rayDirection * hit.distance;
                 endPoint = hitPoint;
                 Debug.DrawLine(rayStart, hitPoint, Color.red);
-                if (hit.transform.gameObject.tag == "FoodAI")
+                if (hit.transform.gameObject.CompareTag("FoodAI") || hit.transform.gameObject.CompareTag("Food"))
                 {
                     distances[i] = hit.distance / viewDistance;
                 }
@@ -163,24 +169,15 @@ public class Creature : MonoBehaviour
     {
 
         //if the agent collides with a food object, it will eat it and gain energy.
-        if (col.gameObject.tag == "Food" && canEat)
-        {
-            energy += energyGained;
-            reproductionEnergy += reproductionEnergyGained;
-            Destroy(col.gameObject);
-        }
+        
         if (col.gameObject.tag == "FoodAI" && canEat)
         {
             fish = col.gameObject.GetComponent<Fish>();
 
-            if (fish.lives > 1)
-            {
-                fish.lives--;
-                return;
-            }
             energy += energyGained;
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
+            counter.FishDecrementCounter();
         }
     }
 
@@ -199,7 +196,11 @@ public class Creature : MonoBehaviour
             if (reproductionEnergy >= reproductionEnergyThreshold)
             {
                 reproductionEnergy = 0;
-                Reproduce();
+                if (counter.creature < 20)
+                {
+                    Reproduce();
+                }
+                
             }
         }
 
@@ -209,8 +210,9 @@ public class Creature : MonoBehaviour
         {
             //this.transform.Rotate(0, 0, 180);
             //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3.5f, this.transform.position.z);
-            StartCoroutine(FadeOutAndDestroy());
-            Destroy(this.gameObject, 3);
+            //StartCoroutine(FadeOutAndDestroy());
+            counter.CreatureDecrementCounter();
+            Destroy(this.gameObject);
             GetComponent<Movement>().enabled = false;
         }
 
@@ -231,7 +233,9 @@ public class Creature : MonoBehaviour
         }
 
         // Once fading is complete, destroy the creature
+        counter.creature--;
         Destroy(gameObject);
+        
     }
 
     private void MutateCreature()
@@ -265,6 +269,7 @@ public class Creature : MonoBehaviour
             //child.SetActive = true;
             //copy the parent's neural network to the child
             child.GetComponent<NN>().layers = GetComponent<NN>().copyLayers();
+            counter.CreatureIncrementCounter();
         }
         reproductionEnergy = 0;
 

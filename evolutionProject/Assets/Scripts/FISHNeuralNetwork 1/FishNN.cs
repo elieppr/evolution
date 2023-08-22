@@ -3,7 +3,7 @@ using UnityEngine;
 public class FishNN : MonoBehaviour
 {
     //int numInputs = 5; //default
-    int[] networkShape = new int[] { 20, 64, 2 };
+    int[] networkShape = new int[] { 18, 32, 2 };
     public Layer[] layers;
     private Creature creatureRef;
     // Awake is called when the script instance is being loaded.

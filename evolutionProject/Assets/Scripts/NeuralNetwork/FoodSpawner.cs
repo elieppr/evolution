@@ -8,9 +8,11 @@ public class FoodSpawner : MonoBehaviour
     public int floorScale = 1;
     public GameObject myPrefab;
     public float timeElapsed = 0;
+    public Counter counter;
 
     void Start()
     {
+        
         // Spawn food at random locations at the start of the game
         for (int i = 0; i < 300; i++)
         {
@@ -36,5 +38,6 @@ public class FoodSpawner : MonoBehaviour
         int y = Random.Range(-150, 151) * floorScale;
         GameObject food = Instantiate(myPrefab, new Vector3((float)x, (float)y, 0.0f), Quaternion.identity);
         food.SetActive(true);
+        counter.FFoodIncrementCounter();
     }
 }

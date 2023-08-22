@@ -13,7 +13,7 @@ public class Movement : MonoBehaviour
     private bool hasController = false;
     private Vector3 playerVelocity;
     //private float gravityValue = -9.81f;
-    public float speed = 50.0F;
+    public float speed = 30.0F;
     public float rotateSpeed = 10.0F;
     public float FB = 0;
     public float LR = 0;

@@ -9,6 +9,12 @@ public class FishSpawner : MonoBehaviour
     public int floorScale = 1;
     public Sprite Csprite;
 
+    public Counter counter;
+
+    private void Start()
+    {
+        
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -30,5 +36,6 @@ public class FishSpawner : MonoBehaviour
         // Set the tag of the instantiated creature to "Food"
         agent.tag = "FoodAI";
         agent.SetActive(true);
+        counter.FishIncrementCounter();
     }
 }

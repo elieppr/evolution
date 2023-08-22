@@ -9,6 +9,13 @@ public class CreatureSpawner : MonoBehaviour
     public int floorScale = 1;
     public Sprite Csprite;
 
+    public Counter counter;
+
+    private void Start()
+    {
+        
+    }
+
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -37,5 +44,6 @@ public class CreatureSpawner : MonoBehaviour
         //spriteRenderer.sprite = Csprite; // Replace 'yourSprite' with the sprite you want to assign
 
         agent.SetActive(true);
+        counter.CreatureIncrementCounter();
     }
 }
