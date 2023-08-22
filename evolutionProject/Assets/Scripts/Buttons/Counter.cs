@@ -16,7 +16,11 @@ public class Counter : MonoBehaviour
     {
         
         Debug.Log(creature + " " + fish + " " + fishfood);
+        fishfood = GameObject.FindGameObjectsWithTag("FishFood").Length;
+        fish = GameObject.FindGameObjectsWithTag("FoodAI").Length;
+        creature = GameObject.FindGameObjectsWithTag("Agent").Length;
 
+        UpdateCounterText();
     }
 
     public void CreatureIncrementCounter()

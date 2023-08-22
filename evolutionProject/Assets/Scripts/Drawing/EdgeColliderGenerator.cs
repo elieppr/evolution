@@ -28,13 +28,13 @@ public class EdgeColliderGenerator {
 	public static void SetColliders (GameObject gameObject, Path[] paths) {
 
 		// Set up edge colliders
-		var edgeColliders = gameObject.GetComponents<EdgeCollider2D> ();
+		var edgeColliders = gameObject.GetComponents<PolygonCollider2D> ();
 
 		for (int i = 0; i < paths.Length; i++) {
 			if (i < edgeColliders.Length) {
 				edgeColliders[i].points = paths[i].points;
 			} else {
-				gameObject.AddComponent<EdgeCollider2D> ().points = paths[i].points;
+				gameObject.AddComponent<PolygonCollider2D> ().points = paths[i].points;
 			}
 		}
 

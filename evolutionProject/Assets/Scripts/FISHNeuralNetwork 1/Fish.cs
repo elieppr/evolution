@@ -275,7 +275,7 @@ public class Fish : MonoBehaviour
         }
 
         // Once fading is complete, destroy the creature
-        counter.fish--;
+        counter.FishDecrementCounter();
         Destroy(gameObject);
         
     }

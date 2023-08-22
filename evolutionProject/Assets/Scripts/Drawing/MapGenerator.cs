@@ -387,7 +387,7 @@ public class MapGenerator : MonoBehaviour
 
 					// Create a larger circular shape with more empty space
 					// Adjust the threshold (0.5f) to control the size of the empty space
-					float circleValue = (normalizedDistance < 0.5f) ? 1.0f : 0.0f;
+					float circleValue = (normalizedDistance < 0.3f) ? 1.0f : 0.0f;
 
 					fullMap[x, y] = Mathf.Clamp(circleValue, iso - isoClamp, iso + isoClamp);
 				}
@@ -441,6 +441,14 @@ public class MapGenerator : MonoBehaviour
 			mesh = new Mesh();
 			meshHolder.AddComponent<MeshFilter>().mesh = mesh;
 			meshHolder.AddComponent<MeshRenderer>().material = material;
+			meshHolder.AddComponent<Rigidbody2D>();
+			//meshHolder.AddComponent(typeof(namespace.Collider2DOptimization));
+			//meshHolder.AddComponent<ShapeOptimizationHelper>();
+			
+			meshHolder.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+
+			meshHolder.tag = "Chunk";
+			meshHolder.layer = 9;
 
 			chunkMap = new float[resolution, resolution];
 

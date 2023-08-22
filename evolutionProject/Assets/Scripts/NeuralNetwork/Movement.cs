@@ -30,9 +30,6 @@ public class Movement : MonoBehaviour
 
     public void Move(float FB, float LR)
     {
-        //clamp the values of LR and FB
-        LR = Mathf.Clamp(LR, -1, 1);
-        FB = Mathf.Clamp(FB, 0.1f, 3);
 
         //move the agent
         if (!creature.isDead)
@@ -44,10 +41,12 @@ public class Movement : MonoBehaviour
             Vector3 forward = transform.up;
 
             // Get the facing direction of the creature
-            Vector3 facingDirection = transform.up;
+            Vector2 facingDirection = transform.up;
             // Move the creature one unit in the facing direction
-            transform.position += facingDirection * speed * Time.deltaTime * FB;
-            
+            Vector2 newPosition = controller.position + facingDirection * speed * Time.deltaTime * FB;
+            controller.MovePosition(newPosition);
+
+
         }
 
 

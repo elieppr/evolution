@@ -10,6 +10,7 @@ public class Creature : MonoBehaviour
     public bool canEat = true;
     public float viewDistance = 20;
     public float size = 1.0f;
+    public float maxEnergy = 500;
     public float energy = 20;
     public float energyGained = 10;
     public float reproductionEnergyGained = 1;
@@ -21,7 +22,9 @@ public class Creature : MonoBehaviour
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
+    public float maxLifeSpan = 700;
     public float[] distances = new float[6];
+    public bool isColored;
 
     public float mutationAmount = 0.8f;
     public float mutationChance = 0.2f;
@@ -50,6 +53,8 @@ public class Creature : MonoBehaviour
     public Counter counter;
 
     private int numRays = 0;
+
+    private int totalOffspring = 0;
     // Start is called before the first frame update
     void Awake()
     {
@@ -83,7 +88,7 @@ public class Creature : MonoBehaviour
         RaycastHit2D hit;
         List<float> hitDistances = new List<float>();
         //LayerMask obstacleLayerMask = LayerMask.GetMask("Default", "Penguin", "FishFood"); // Add layers as needed
-        LayerMask obstacleLayerMask = LayerMask.GetMask("Fish");
+        LayerMask obstacleLayerMask = LayerMask.GetMask("Fish", "Chunk");
         for (int i = 0; i < numRaycasts; i++)
         {
             float angle = ((2 * i + 1 - numRaycasts) * angleBetweenRaycasts / 2);
@@ -92,7 +97,7 @@ public class Creature : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle + transform.eulerAngles.z);
             Vector2 rayDirection = rotation * Vector2.up;
 
-            float offset = 0.3f * transform.localScale.y;
+            float offset = 0.1f * transform.localScale.y;
             Vector2 rayStart = (Vector2)transform.position + offset * rayDirection;
 
             //Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
@@ -119,6 +124,11 @@ public class Creature : MonoBehaviour
                 if (hit.transform.gameObject.CompareTag("FoodAI") || hit.transform.gameObject.CompareTag("Food"))
                 {
                     distances[i] = hit.distance / viewDistance;
+                }
+                else if (hit.transform.gameObject.CompareTag("Chunk"))
+                {
+                    Debug.Log("HHHHHHHHHHHHHHHit WALL");
+                    distances[i] = -1 * hit.distance / viewDistance;
                 }
                 else
                 {
@@ -152,12 +162,23 @@ public class Creature : MonoBehaviour
         FB = outputsFromNN[0];
         LR = outputsFromNN[1];
 
-        
+        //clamp the values of LR and FB
+        LR = Mathf.Clamp(LR, -1, 1);
+        FB = Mathf.Clamp(FB, 0.1f, 3);
+
         //if the agent is the user, use the inputs from the user instead of the neural network
         if (isUser)
         {
             FB = Input.GetAxis("Vertical");
             LR = Input.GetAxis("Horizontal") / 10;
+        }
+
+        //change colors
+        if (isColored)
+        {
+            //Color newColor = new Color(energy / maxEnergy * 255, System.Math.Abs(FB * 85), System.Math.Abs(LR * 255));
+            Color newColor = new Color(energy / maxEnergy * 255, System.Math.Min(totalOffspring, 255), elapsed/maxLifeSpan * 255);
+            renderer.material.color = newColor;
         }
 
         //Move the agent using the move function
@@ -173,11 +194,15 @@ public class Creature : MonoBehaviour
         if (col.gameObject.tag == "FoodAI" && canEat)
         {
             fish = col.gameObject.GetComponent<Fish>();
-
+            
             energy += energyGained;
+            if (energy > maxEnergy)
+            {
+                energy = maxEnergy;
+            }
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
-            counter.FishDecrementCounter();
+            
         }
     }
 
@@ -185,6 +210,10 @@ public class Creature : MonoBehaviour
     {
         elapsed += Time.deltaTime;
         lifeSpan += Time.deltaTime;
+        if (elapsed > maxLifeSpan)
+        {
+            Destroy(this.gameObject);
+        }
         if (elapsed >= 1f)
         {
             elapsed = elapsed % 1f;
@@ -272,6 +301,7 @@ public class Creature : MonoBehaviour
             counter.CreatureIncrementCounter();
         }
         reproductionEnergy = 0;
+        totalOffspring++;
 
     }
 }

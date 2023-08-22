@@ -11,6 +11,7 @@ TagManager:
   - FishFood
   - Pheromone
   - FishFoodCollider
+  - Chunk
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - Penguin
   - Fish
   - FishFood
-  - 
+  - Chunk
   - 
   - 
   - 

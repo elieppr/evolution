@@ -13,8 +13,8 @@ public class FishMovement : MonoBehaviour
     private bool hasController = false;
     private Vector3 playerVelocity;
     //private float gravityValue = -9.81f;
-    public float speed = 15.0F;
-    public float rotateSpeed = 15.0F;
+    public float speed;
+    public float rotateSpeed;
     public float FB = 0;
     public float LR = 0;
 
@@ -46,10 +46,10 @@ public class FishMovement : MonoBehaviour
             Vector3 forward = transform.up;
 
             // Get the facing direction of the creature
-            Vector3 facingDirection = transform.up;
+            Vector2 facingDirection = transform.up;
             // Move the creature one unit in the facing direction
-            transform.position += facingDirection * speed * Time.deltaTime * FB;
-            //transform.position += facingDirection * Time.deltaTime * FB;
+            Vector2 newPosition = controller.position + facingDirection * speed * Time.deltaTime * FB;
+            controller.MovePosition(newPosition);
 
         }
 
