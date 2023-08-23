@@ -44,6 +44,5 @@ public class CreatureSpawner : MonoBehaviour
         //spriteRenderer.sprite = Csprite; // Replace 'yourSprite' with the sprite you want to assign
 
         agent.SetActive(true);
-        counter.CreatureIncrementCounter();
     }
 }

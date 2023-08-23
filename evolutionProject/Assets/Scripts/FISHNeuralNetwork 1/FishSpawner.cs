@@ -36,6 +36,5 @@ public class FishSpawner : MonoBehaviour
         // Set the tag of the instantiated creature to "Food"
         agent.tag = "FoodAI";
         agent.SetActive(true);
-        counter.FishIncrementCounter();
     }
 }

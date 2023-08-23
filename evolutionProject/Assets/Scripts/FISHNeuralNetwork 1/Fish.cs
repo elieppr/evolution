@@ -168,8 +168,7 @@ public class Fish : MonoBehaviour
             energy += energyGained;
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
-            counter.FFoodDecrementCounter();
-            
+             
         }
     }
 
@@ -227,7 +226,6 @@ public class Fish : MonoBehaviour
             //Destroy(this.gameObject, 3);
             //GetComponent<FishMovement>().enabled = false;
             //StartCoroutine(FadeOutAndDestroy());
-            counter.FishDecrementCounter();
             Destroy(gameObject);
             
         }
@@ -275,7 +273,6 @@ public class Fish : MonoBehaviour
         }
 
         // Once fading is complete, destroy the creature
-        counter.FishDecrementCounter();
         Destroy(gameObject);
         
     }
@@ -313,7 +310,6 @@ public class Fish : MonoBehaviour
             child.GetComponent<FishNN>().layers = GetComponent<FishNN>().copyLayers();
             child.GetComponent<Fish>().lifeSpan = 0;
             child.GetComponent<Fish>().elapsed = 0;
-            counter.FishIncrementCounter();
         }
         //reproductionEnergy = 0;
 

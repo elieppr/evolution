@@ -9,7 +9,9 @@ public class Creature : MonoBehaviour
     public bool isUser = false;
     public bool canEat = true;
     public float viewDistance = 20;
-    public float size = 1.0f;
+    public float size;
+    public float maxSize;
+    public float minSize;
     public float maxEnergy = 500;
     public float energy = 20;
     public float energyGained = 10;
@@ -54,7 +56,9 @@ public class Creature : MonoBehaviour
 
     private int numRays = 0;
 
-    private int totalOffspring = 0;
+    public int totalOffspring = 0;
+
+    private Color originalColor;
     // Start is called before the first frame update
     void Awake()
     {
@@ -67,6 +71,10 @@ public class Creature : MonoBehaviour
 
         renderer = GetComponent<Renderer>();
         startColor = renderer.material.color;
+
+        size = minSize;
+
+        originalColor = renderer.material.color;
     }
 
     // Update is called once per frame
@@ -79,10 +87,12 @@ public class Creature : MonoBehaviour
             MutateCreature();
             this.transform.localScale = new Vector3(size, size, 0); //////////////////
             isMutated = true;
-            energy = 20;
+            //energy = 20;
         }
 
         ManageEnergy();
+
+        size += (maxSize - minSize) / maxLifeSpan * lifeSpan;
 
 
         RaycastHit2D hit;
@@ -180,6 +190,10 @@ public class Creature : MonoBehaviour
             Color newColor = new Color(energy / maxEnergy * 255, System.Math.Min(totalOffspring, 255), elapsed/maxLifeSpan * 255);
             renderer.material.color = newColor;
         }
+        else
+        {
+            renderer.material.color = originalColor;
+        }
 
         //Move the agent using the move function
         movement.Move(FB, LR);
@@ -240,7 +254,6 @@ public class Creature : MonoBehaviour
             //this.transform.Rotate(0, 0, 180);
             //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3.5f, this.transform.position.z);
             //StartCoroutine(FadeOutAndDestroy());
-            counter.CreatureDecrementCounter();
             Destroy(this.gameObject);
             GetComponent<Movement>().enabled = false;
         }
@@ -280,6 +293,9 @@ public class Creature : MonoBehaviour
         mutationChance = Mathf.Max(mutationChance, 0);
 
         nn.MutateNetwork(mutationAmount, mutationChance);
+
+        // randomly change size;
+        //minSize += ()
     }
 
     public void Reproduce()
@@ -298,7 +314,7 @@ public class Creature : MonoBehaviour
             //child.SetActive = true;
             //copy the parent's neural network to the child
             child.GetComponent<NN>().layers = GetComponent<NN>().copyLayers();
-            counter.CreatureIncrementCounter();
+            
         }
         reproductionEnergy = 0;
         totalOffspring++;
