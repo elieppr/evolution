@@ -468,7 +468,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 17fa84703485d314b8d6b5216987d4b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: db77d372c81dcf745838fe6d72d2ec7e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -517,7 +517,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.48, y: 0.48}
+    oldSize: {x: 0.32, y: 0.32}
     newSize: {x: 0.32, y: 0.32}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -525,28 +525,32 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: 0.028656276, y: -0.19675326}
-      - {x: 0.043325916, y: -0.21649346}
-      - {x: 0.068223216, y: -0.22228198}
-      - {x: 0.09179904, y: -0.18649346}
-      - {x: 0.10431031, y: 0.030287609}
-      - {x: 0.20512496, y: 0.029387727}
-      - {x: 0.21400888, y: 0.06623367}
-      - {x: 0.19396438, y: 0.09229995}
-      - {x: 0.07515522, y: 0.094205946}
-      - {x: 0.05855801, y: 0.20488897}
-      - {x: -0.056809086, y: 0.19770461}
-      - {x: -0.0674016, y: 0.09615895}
-      - {x: -0.20956692, y: 0.094842024}
-      - {x: -0.21578568, y: 0.056660574}
-      - {x: -0.19991098, y: 0.030543447}
-      - {x: -0.096467294, y: 0.03088223}
-      - {x: -0.09359811, y: -0.20105743}
-      - {x: -0.04, y: -0.22999999}
-      - {x: 0.0002276646, y: -0.10448954}
-      - {x: 0, y: -0.14999999}
-      - {x: 0, y: -0.089999996}
-      - {x: 0.010660729, y: -0.14324673}
+    - - {x: -0.0056059966, y: 0.13696381}
+      - {x: -0.023397492, y: 0.113498256}
+      - {x: -0.043037627, y: 0.10034877}
+      - {x: -0.04412249, y: 0.054259}
+      - {x: -0.10619481, y: -0.016295576}
+      - {x: -0.09719159, y: -0.03739265}
+      - {x: -0.06539077, y: -0.02528067}
+      - {x: -0.05331758, y: -0.12114828}
+      - {x: -0.04219713, y: -0.12392736}
+      - {x: -0.041297816, y: -0.13050655}
+      - {x: -0.019663852, y: -0.13022228}
+      - {x: -0.015255343, y: -0.12239584}
+      - {x: -0.008666331, y: -0.117596395}
+      - {x: 0.00088093744, y: -0.11513645}
+      - {x: 0.007043835, y: -0.12355019}
+      - {x: 0.011796149, y: -0.13160902}
+      - {x: 0.03062082, y: -0.13073485}
+      - {x: 0.03444858, y: -0.12147651}
+      - {x: 0.04499418, y: -0.11675736}
+      - {x: 0.04923554, y: -0.080080666}
+      - {x: 0.050199766, y: -0.027191918}
+      - {x: 0.08883493, y: -0.030874506}
+      - {x: 0.09559463, y: -0.017632086}
+      - {x: 0.033171177, y: 0.056708194}
+      - {x: 0.031864624, y: 0.1060986}
+      - {x: 0.011981919, y: 0.11260735}
 --- !u!4 &434004662 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6237452624497577747, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
@@ -3629,7 +3633,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -26.393036, y: -40.96994}
+  m_AnchoredPosition: {x: -26.393066, y: -40.96994}
   m_SizeDelta: {x: 195.00702, y: 48.127594}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1604749476
@@ -5079,7 +5083,7 @@ PrefabInstance:
       objectReference: {fileID: 1462696481}
     - target: {fileID: 6237452624497577748, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
       propertyPath: size
-      value: 20
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6237452624497577748, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
       propertyPath: energy
@@ -5095,11 +5099,11 @@ PrefabInstance:
       objectReference: {fileID: 1604749476}
     - target: {fileID: 6237452624497577748, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
       propertyPath: maxSize
-      value: 30
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 6237452624497577748, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
       propertyPath: minSize
-      value: 20
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6237452624497577748, guid: a698f9df61158a848ab0249abd40c3bc, type: 3}
       propertyPath: isColored
