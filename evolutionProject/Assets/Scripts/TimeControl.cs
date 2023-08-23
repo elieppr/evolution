@@ -17,7 +17,7 @@ public class TimeControl : MonoBehaviour
 
     public void UpdateCounterText(float newScale)
     {
-        counterText.text = $"{newScale}";
+        counterText.text = $"{newScale.ToString("0.000")}";
     }
 }
 

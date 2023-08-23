@@ -7,6 +7,7 @@ public class ColorButton : MonoBehaviour
 {
     public Creature creature;
     private GameObject[] agentList;
+    bool colored = false;
 
     private void Start()
     {
@@ -21,7 +22,9 @@ public class ColorButton : MonoBehaviour
         for (int i = 0; i < agentList.Length; i++)
         {
             Creature creature = agentList[i].GetComponent<Creature>();
-            creature.isColored = !creature.isColored;
+            creature.isColored = colored;
+            
         }
+        colored = !colored;
     }
 }

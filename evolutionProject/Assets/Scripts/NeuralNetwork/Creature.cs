@@ -192,7 +192,7 @@ public class Creature : MonoBehaviour
         }
         else
         {
-            renderer.material.color = originalColor;
+            renderer.material.color = Color.white;
         }
 
         //Move the agent using the move function
