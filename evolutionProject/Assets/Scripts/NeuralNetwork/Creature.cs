@@ -69,12 +69,13 @@ public class Creature : MonoBehaviour
         //fish = gameObject.GetComponent<Fish>();
         //this.name = "Agent";
 
-        renderer = GetComponent<Renderer>();
+        renderer = GetComponent<SpriteRenderer>();
         startColor = renderer.material.color;
 
         size = minSize;
 
         originalColor = renderer.material.color;
+        totalOffspring = 0;
     }
 
     // Update is called once per frame
@@ -92,7 +93,7 @@ public class Creature : MonoBehaviour
 
         ManageEnergy();
 
-        size += (maxSize - minSize) / maxLifeSpan * lifeSpan;
+        
 
 
         RaycastHit2D hit;
@@ -187,7 +188,12 @@ public class Creature : MonoBehaviour
         if (isColored)
         {
             //Color newColor = new Color(energy / maxEnergy * 255, System.Math.Abs(FB * 85), System.Math.Abs(LR * 255));
-            Color newColor = new Color(energy / maxEnergy * 255, System.Math.Min(totalOffspring, 255), elapsed/maxLifeSpan * 255);
+            //Color newColor = new Color((240 - energy/maxEnergy * 240)/255, (240 - System.Math.Min(totalOffspring, 240))/255,  (240 - elapsed/maxLifeSpan * 240)/255);
+            //GetComponent<SpriteRenderer>().color = newColor;
+            //Debug.Log((240 - 240 * energy / maxEnergy) + " " + (240 - System.Math.Min(totalOffspring, 240)) + " " + (240 - elapsed / maxLifeSpan * 240));
+            //Debug.Log(newColor);
+
+            Color newColor = new Color(1f - elapsed / maxLifeSpan, 1f - energy / maxEnergy, 0.2f + System.Math.Min(totalOffspring*5, 255) / 255);
             renderer.material.color = newColor;
         }
         else
@@ -222,6 +228,12 @@ public class Creature : MonoBehaviour
 
     public void ManageEnergy()
     {
+        float sizeAdded = ((maxSize - minSize) / maxLifeSpan) * Time.deltaTime;
+        size += sizeAdded;
+        Debug.Log("SIZEADDEDSFSDIJFISJDFISDJFISJ" + sizeAdded);
+        Vector3 sizeIncrease = new Vector3(sizeAdded, sizeAdded / 10, 0f);
+        gameObject.transform.localScale += sizeIncrease;
+
         elapsed += Time.deltaTime;
         lifeSpan += Time.deltaTime;
         if (elapsed > maxLifeSpan)

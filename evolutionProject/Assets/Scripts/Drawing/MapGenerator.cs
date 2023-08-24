@@ -8,8 +8,8 @@ public class MapGenerator : MonoBehaviour
 {
 	[Header("Size settings")]
 	public int chunkResolution = 10;
-	public int numChunksX = 16;
-	public int numChunksY = 9;
+	public int numChunksX = 90;
+	public int numChunksY = 60;
 	public float mapWidth;
 	public bool colliderAroundBorder;
 
@@ -46,6 +46,7 @@ public class MapGenerator : MonoBehaviour
 
 	Vector2 brushPosLastFrame;
 
+	
 	void Start()
 	{
 		Init();
@@ -441,11 +442,11 @@ public class MapGenerator : MonoBehaviour
 			mesh = new Mesh();
 			meshHolder.AddComponent<MeshFilter>().mesh = mesh;
 			meshHolder.AddComponent<MeshRenderer>().material = material;
-			meshHolder.AddComponent<Rigidbody2D>();
+			//meshHolder.AddComponent<Rigidbody2D>();
 			//meshHolder.AddComponent(typeof(namespace.Collider2DOptimization));
 			//meshHolder.AddComponent<ShapeOptimizationHelper>();
 			
-			meshHolder.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
+			//meshHolder.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
 
 			meshHolder.tag = "Chunk";
 			meshHolder.layer = 9;
@@ -454,7 +455,11 @@ public class MapGenerator : MonoBehaviour
 
 			marchingSquares = new MarchingSquares(chunkMap.GetLength(0), chunkMap.GetLength(1));
 			bounds = new Bounds2D(centre, Vector2.one * size);
+
+			//meshHolder.AddComponent<PolygonCollider2D>();
 			colliderGenerator = new EdgeColliderGenerator();
+
+
 		}
 
 		public void UpdateChunkMeshData(float[,] fullMap, float iso, bool smooth)
@@ -483,6 +488,7 @@ public class MapGenerator : MonoBehaviour
 				mesh.SetVertices(meshData.vertices);
 				mesh.SetTriangles(meshData.triangles, 0, true);
 				EdgeColliderGenerator.SetColliders(meshHolder, colliderPaths);
+
 			}
 
 		}

@@ -15,7 +15,7 @@ namespace Collider2DOptimization
 		public double tolerance = 0;
 		private PolygonCollider2D coll;
 		private List<List<Vector2>> originalPaths = new List<List<Vector2>>();
-
+		
 		void OnValidate()
 		{
 			if (coll == null)
