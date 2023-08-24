@@ -6,6 +6,21 @@ public class NN : MonoBehaviour
     int[] networkShape = new int[] { 10, 64, 2 };
     public Layer[] layers;
     private Creature creatureRef;
+
+    public SettingsManager settings;
+    public bool isRelu;
+    public bool isSigmoid;
+    public bool isTanh;
+    public bool isLeakyRelu = true;
+
+    private void Update()
+    {
+        isRelu = settings.reluP;
+        isSigmoid = settings.sigmoidP;
+        isTanh = settings.tanhP;
+        isLeakyRelu = settings.leakyReluP;
+    }
+
     // Awake is called when the script instance is being loaded.
     // Start is called before the first frame update.
     // Awake gets called before Start which is why we use Awake here
@@ -35,17 +50,17 @@ public class NN : MonoBehaviour
             if (i == 0)
             {
                 layers[i].Forward(inputs);
-                layers[i].Activation();
+                layers[i].Activation(isRelu, isSigmoid, isTanh);
             }
             else if (i == layers.Length - 1)
             {
                 layers[i].Forward(layers[i - 1].nodeArray);
-                //layers[i].Activation();
+                layers[i].Activation(isRelu, isSigmoid, isTanh);
             }
             else
             {
                 layers[i].Forward(layers[i - 1].nodeArray);
-                //layers[i].Activation();
+                layers[i].Activation(isRelu, isSigmoid, isTanh);
             }
         }
         
@@ -104,38 +119,44 @@ public class NN : MonoBehaviour
         }
 
         //This function is the activation function for the neural network uncomment the one you want to use.
-        public void Activation()
+        public void Activation(bool isRelu, bool isSigmoid, bool isTanh)
         {
-            //leaky relu function
-            for (int i = 0; i < nodeArray.Length; i++)
+
+            if (isRelu)
             {
-                if (nodeArray[i] < 0)
+                for (int i = 0; i < nodeArray.Length; i++)
                 {
-                    nodeArray[i] = nodeArray[i] / 10;
+                    if (nodeArray[i] < 0)
+                    {
+                        nodeArray[i] = 0;
+                    }
                 }
             }
-
-
-            //sigmoid function
-            //for (int i = 0; i < nodeArray.Length; i++)
-            //{
-            //    nodeArray[i] = 1 / (1 + Mathf.Exp(-nodeArray[i]));
-            //}
-
-            //tanh function
-            //for (int i = 0; i < nodeArray.Length; i++)
-            //{
-            //    nodeArray[i] = (float)System.Math.Tanh(nodeArray[i]);
-            //}
-
-            //relu function
-            //for (int i = 0; i < nodeArray.Length; i++)
-            //{
-            //    if (nodeArray[i] < 0)
-            //    {
-            //        nodeArray[i] = 0;
-            //    }
-            //}
+            else if (isSigmoid)
+            {
+                for (int i = 0; i < nodeArray.Length; i++)
+                {
+                    nodeArray[i] = 1 / (1 + Mathf.Exp(-nodeArray[i]));
+                }
+            }
+            else if (isTanh)
+            {
+                for (int i = 0; i < nodeArray.Length; i++)
+                {
+                    nodeArray[i] = (float)System.Math.Tanh(nodeArray[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < nodeArray.Length; i++)
+                {
+                    if (nodeArray[i] < 0)
+                    {
+                        nodeArray[i] = nodeArray[i] / 10;
+                    }
+                }
+            }
+            
         }
 
         //This is used to randomly modify the weights and biases for the Evolution Sim and Genetic Algorithm.

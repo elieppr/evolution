@@ -4,25 +4,30 @@ using UnityEngine;
 
 public class Fish : MonoBehaviour
 {
-    public bool mutateMutations = true;
+    public bool mutateMutations = false;
     public GameObject agentPrefab;
     public bool isUser = false;
     public bool canEat = true;
-    public float viewDistance = 20;
-    public float size = 1.0f;
-    public float energy = 20;
-    public float energyGained = 10;
-    public float reproductionEnergyGained = 1;
+    public float viewDistance;
+    public float size;
+    public float minSize;
+    public float maxSize;
+    public float maxLifeSpan;
+    public float maxEnergy;
+    public float energy;
+    public float energyGained;
+    public float reproductionEnergyGained;
     public float reproductionEnergy = 0;
-    public float reproductionEnergyThreshold = 10;
+    public float reproductionEnergyThreshold;
     //public float timeUntilReproduce = 50;
     public float FB = 0;
     public float LR = 0;
-    public int numberOfChildren = 1;
+    public int numberOfChildren;
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
     public float[] distances = new float[20];
+    public int maxFish;
 
     public float mutationAmount = 0.8f;
     public float mutationChance = 0.2f;
@@ -53,6 +58,11 @@ public class Fish : MonoBehaviour
 
     private int numRays = 0;
 
+    public SettingsManager settings;
+
+    public bool isColored;
+    public int totalOffspring = 0;
+
     public Counter counter;
     // Start is called before the first frame update
     void Awake()
@@ -61,18 +71,42 @@ public class Fish : MonoBehaviour
         movement = gameObject.GetComponent<FishMovement>();
         pheromoneController = gameObject.GetComponent<PheromoneController>();
         distances = new float[18];
-
         
-
-        //this.name = "Agent";
-
         renderer = GetComponent<Renderer>();
         startColor = renderer.material.color;
+
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energy = settings.startingEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxFish = settings.maxP;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxFish = settings.maxP;
+
         //only do this once
         if (!isMutated)
         {
@@ -95,7 +129,7 @@ public class Fish : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle + transform.eulerAngles.z);
             Vector2 rayDirection = rotation * Vector2.up;
 
-            float offset = 0.3f * transform.localScale.y;
+            float offset = 0.01f * transform.localScale.y;
             Vector2 rayStart = (Vector2)transform.position + offset * rayDirection;
 
             //Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
@@ -153,6 +187,22 @@ public class Fish : MonoBehaviour
             LR = Input.GetAxis("Horizontal") / 10;
         }
 
+        if (isColored)
+        {
+            //Color newColor = new Color(energy / maxEnergy * 255, System.Math.Abs(FB * 85), System.Math.Abs(LR * 255));
+            //Color newColor = new Color((240 - energy/maxEnergy * 240)/255, (240 - System.Math.Min(totalOffspring, 240))/255,  (240 - elapsed/maxLifeSpan * 240)/255);
+            //GetComponent<SpriteRenderer>().color = newColor;
+            //Debug.Log((240 - 240 * energy / maxEnergy) + " " + (240 - System.Math.Min(totalOffspring, 240)) + " " + (240 - elapsed / maxLifeSpan * 240));
+            //Debug.Log(newColor);
+
+            Color newColor = new Color(0.2f + System.Math.Min(totalOffspring * 5, 255) / 255, 1f - elapsed / maxLifeSpan, 1f - energy / maxEnergy);
+            renderer.material.color = newColor;
+        }
+        else
+        {
+            renderer.material.color = Color.white;
+        }
+
         //Move the agent using the move function
         movement.Move(FB, LR);
     }
@@ -166,6 +216,10 @@ public class Fish : MonoBehaviour
         {
 
             energy += energyGained;
+            if (energy > maxEnergy)
+            {
+                energy = maxEnergy;
+            }
             reproductionEnergy += reproductionEnergyGained;
             Destroy(col.gameObject);
              
@@ -196,8 +250,17 @@ public class Fish : MonoBehaviour
 
     public void ManageEnergy()
     {
+        float newSize = minSize + (((maxSize - minSize) / maxLifeSpan * elapsed) * Time.deltaTime);
+        size = newSize;
+        Vector3 sizeIncrease = new Vector3(newSize, newSize, 0f);
+        gameObject.transform.localScale = sizeIncrease;
+
         elapsed += Time.deltaTime;
         lifeSpan += Time.deltaTime;
+        if (elapsed > maxLifeSpan)
+        {
+            Destroy(this.gameObject);
+        }
         if (elapsed >= 1f)
         {
             elapsed = elapsed % 1f;
@@ -209,7 +272,7 @@ public class Fish : MonoBehaviour
             if (reproductionEnergy >= reproductionEnergyThreshold)
             {
                 reproductionEnergy = 0;
-                if (counter.fish < 100)
+                if (counter.fish < maxFish)
                 {
                     Reproduce();
                 }
@@ -312,7 +375,7 @@ public class Fish : MonoBehaviour
             child.GetComponent<Fish>().elapsed = 0;
         }
         //reproductionEnergy = 0;
-
+        totalOffspring++;
     }
 }
 

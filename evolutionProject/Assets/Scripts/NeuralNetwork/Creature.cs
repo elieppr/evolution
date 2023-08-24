@@ -4,32 +4,33 @@ using UnityEngine;
 
 public class Creature : MonoBehaviour
 {
-    public bool mutateMutations = true;
+    public bool mutateMutations = false;
     public GameObject agentPrefab;
     public bool isUser = false;
     public bool canEat = true;
-    public float viewDistance = 20;
+    public float viewDistance;
     public float size;
     public float maxSize;
     public float minSize;
-    public float maxEnergy = 500;
-    public float energy = 20;
-    public float energyGained = 10;
-    public float reproductionEnergyGained = 1;
+    public float maxEnergy;
+    public float energy;
+    public float energyGained;
+    public float reproductionEnergyGained;
     public float reproductionEnergy = 0;
-    public float reproductionEnergyThreshold = 10;
-    public float FB = 0;
-    public float LR = 0;
-    public int numberOfChildren = 5;
+    public float reproductionEnergyThreshold;
+    public float FB;
+    public float LR;
+    public int numberOfChildren;
     private bool isMutated = false;
     float elapsed = 0f;
     public float lifeSpan = 0f;
-    public float maxLifeSpan = 700;
+    public float maxLifeSpan;
     public float[] distances = new float[6];
     public bool isColored;
+    public int maxPenguins;
 
-    public float mutationAmount = 0.8f;
-    public float mutationChance = 0.2f;
+    public float mutationAmount;
+    public float mutationChance;
     public NN nn;
     public Movement movement;
 
@@ -58,6 +59,8 @@ public class Creature : MonoBehaviour
 
     public int totalOffspring = 0;
 
+    public SettingsManager settings;
+
     private Color originalColor;
     // Start is called before the first frame update
     void Awake()
@@ -76,11 +79,39 @@ public class Creature : MonoBehaviour
 
         originalColor = renderer.material.color;
         totalOffspring = 0;
-    }
+
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energy = settings.startingEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxPenguins = settings.maxP;
+
+}
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxPenguins = settings.maxP;
+
         //only do this once
         if (!isMutated)
         {
@@ -108,7 +139,7 @@ public class Creature : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle + transform.eulerAngles.z);
             Vector2 rayDirection = rotation * Vector2.up;
 
-            float offset = 0.1f * transform.localScale.y;
+            float offset = 0.01f * transform.localScale.y;
             Vector2 rayStart = (Vector2)transform.position + offset * rayDirection;
 
             //Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
@@ -193,7 +224,7 @@ public class Creature : MonoBehaviour
             //Debug.Log((240 - 240 * energy / maxEnergy) + " " + (240 - System.Math.Min(totalOffspring, 240)) + " " + (240 - elapsed / maxLifeSpan * 240));
             //Debug.Log(newColor);
 
-            Color newColor = new Color(1f - elapsed / maxLifeSpan, 1f - energy / maxEnergy, 0.2f + System.Math.Min(totalOffspring*5, 255) / 255);
+            Color newColor = new Color(1f - elapsed / maxLifeSpan, 1f - energy / maxEnergy, 0.2f + System.Math.Min(totalOffspring*255/numberOfChildren, 255) / 255);
             renderer.material.color = newColor;
         }
         else
@@ -228,11 +259,10 @@ public class Creature : MonoBehaviour
 
     public void ManageEnergy()
     {
-        float sizeAdded = ((maxSize - minSize) / maxLifeSpan) * Time.deltaTime;
-        size += sizeAdded;
-        Debug.Log("SIZEADDEDSFSDIJFISJDFISDJFISJ" + sizeAdded);
-        Vector3 sizeIncrease = new Vector3(sizeAdded, sizeAdded / 10, 0f);
-        gameObject.transform.localScale += sizeIncrease;
+        float newSize = minSize + (((maxSize - minSize) / maxLifeSpan * elapsed) * Time.deltaTime);
+        size = newSize;
+        Vector3 sizeIncrease = new Vector3(newSize, newSize, 0f);
+        gameObject.transform.localScale = sizeIncrease;
 
         elapsed += Time.deltaTime;
         lifeSpan += Time.deltaTime;
@@ -251,7 +281,7 @@ public class Creature : MonoBehaviour
             if (reproductionEnergy >= reproductionEnergyThreshold)
             {
                 reproductionEnergy = 0;
-                if (counter.creature < 20)
+                if (counter.creature < maxPenguins)
                 {
                     Reproduce();
                 }
@@ -266,8 +296,7 @@ public class Creature : MonoBehaviour
             //this.transform.Rotate(0, 0, 180);
             //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 3.5f, this.transform.position.z);
             //StartCoroutine(FadeOutAndDestroy());
-            Destroy(this.gameObject);
-            GetComponent<Movement>().enabled = false;
+            Destroy(gameObject);
         }
 
     }
@@ -326,7 +355,8 @@ public class Creature : MonoBehaviour
             //child.SetActive = true;
             //copy the parent's neural network to the child
             child.GetComponent<NN>().layers = GetComponent<NN>().copyLayers();
-            
+            child.GetComponent<Creature>().lifeSpan = 0;
+            child.GetComponent<Creature>().elapsed = 0;
         }
         reproductionEnergy = 0;
         totalOffspring++;

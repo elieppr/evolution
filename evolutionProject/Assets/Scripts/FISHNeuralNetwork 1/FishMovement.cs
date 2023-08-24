@@ -20,12 +20,15 @@ public class FishMovement : MonoBehaviour
 
     //private ObjectTracker objectTracker;
     private Fish creature;
+    public SettingsManager settings;
 
     void Awake()
     {
         //objectTracker = FindObjectOfType<ObjectTracker>();
         creature = GetComponent<Fish>();
         controller = GetComponent<Rigidbody2D>();
+        speed = settings.maxSpeedF;
+        rotateSpeed = settings.maxRotationSpeedF;
     }
 
     public void Move(float FB, float LR)

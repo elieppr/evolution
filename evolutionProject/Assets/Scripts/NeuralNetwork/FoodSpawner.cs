@@ -9,7 +9,7 @@ public class FoodSpawner : MonoBehaviour
     public GameObject myPrefab;
     public float timeElapsed = 0;
     public Counter counter;
-
+    public SettingsManager settings;
     public LayerMask collisionLayer;
 
     void Start()
@@ -27,7 +27,7 @@ public class FoodSpawner : MonoBehaviour
     {
         //spawn food every second with timeElapsed
         timeElapsed += Time.deltaTime;
-        if (timeElapsed >= spawnRate && counter.fishfood < 500)
+        if (timeElapsed >= spawnRate && counter.fishfood < settings.maxFF)
         {
             timeElapsed = timeElapsed % spawnRate;
             SpawnFood();

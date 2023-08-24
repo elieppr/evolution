@@ -10,22 +10,28 @@ using System.Linq;
 public class Movement : MonoBehaviour
 {
     public Rigidbody2D controller;
-    private bool hasController = false;
-    private Vector3 playerVelocity;
-    //private float gravityValue = -9.81f;
-    public float speed = 30.0F;
-    public float rotateSpeed = 10.0F;
+    public float speed;
+    public float rotateSpeed;
     public float FB = 0;
     public float LR = 0;
 
     //private ObjectTracker objectTracker;
     private Creature creature;
+    public SettingsManager settings;
 
     void Awake()
     {
         //objectTracker = FindObjectOfType<ObjectTracker>();
         creature = GetComponent<Creature>();
         controller = GetComponent<Rigidbody2D>();
+        speed = settings.maxSpeedP;
+        rotateSpeed = settings.maxRotationSpeedP;
+    }
+
+    private void FixedUpdate()
+    {
+        speed = settings.maxSpeedP;
+        rotateSpeed = settings.maxRotationSpeedP;
     }
 
     public void Move(float FB, float LR)
