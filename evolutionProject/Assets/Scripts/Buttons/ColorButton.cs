@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ColorButton : MonoBehaviour
 {
     public Creature creature;
-    //public Fish fish;
+    public Fish fish;
     private GameObject[] agentList;
     private GameObject[] fishList;
     bool colored = false;
@@ -33,7 +33,7 @@ public class ColorButton : MonoBehaviour
         for (int i = 0; i < agentList.Length; i++)
         {
             Fish fish = fishList[i].GetComponent<Fish>();
-            creature.isColored = colored;
+            fish.isColored = colored;
 
         }
 

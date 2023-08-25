@@ -8,11 +8,50 @@ public class SettingsManager : MonoBehaviour
 {
     // Settings variables
     // GENERAL
+    public Camera mainCamera;
+    public Material objectMaterial;
+    public Renderer objectRenderer;
+    public Slider backgroundRSlider;
+    public Slider backgroundGSlider;
+    public Slider backgroundBSlider;
+    public Slider wallRSlider;
+    public Slider wallGSlider;
+    public Slider wallBSlider;
+
+    public float backgroundR;
+    public float backgroundG;
+    public float backgroundB;
+    public TMP_Text BackR;
+    public TMP_Text BackG;
+    public TMP_Text BackB;
+    public float wallR;
+    public float wallG;
+    public float wallB;
+    public TMP_Text WallR;
+    public TMP_Text WallG;
+    public TMP_Text WallB;
+
+
     public Color backgroundColor;
     public Color wallMaterialColor;
     public int maxP;
-    public int maxF;
+    public int maxF = 20;
     public int maxFF = 300;
+    public Slider maxPengiunSlider;
+    public Slider maxFishSlider;
+    public Slider maxFishFoodSlider;
+    public TMP_Text maxPenguin;
+    public TMP_Text maxFish;
+    public TMP_Text maxFishFood;
+    public int minP;
+    public int minF = 20;
+    public int minFF = 300;
+    public Slider minPengiunSlider;
+    public Slider minFishSlider;
+    public Slider minFishFoodSlider;
+    public TMP_Text minPenguin;
+    public TMP_Text minFish;
+    public TMP_Text minFishFood;
 
     // PENGUIN
     public float maxSpeedP = 12;
@@ -163,6 +202,13 @@ public class SettingsManager : MonoBehaviour
         UpdateMaxLifeSpanF();
         UpdateMutationAmountF();
         UpdateMutationChanceF();
+
+        backgroundRSlider.value = mainCamera.backgroundColor.r;
+        backgroundGSlider.value = mainCamera.backgroundColor.g;
+        backgroundBSlider.value = mainCamera.backgroundColor.b;
+        //materialRSlider.value = objectMaterial.color.r;
+        //materialGSlider.value = objectMaterial.color.g;
+        //materialBSlider.value = objectMaterial.color.b;
     }
 
     public void PauseGame()
@@ -177,6 +223,21 @@ public class SettingsManager : MonoBehaviour
     }
 
     // GENERAL NOT DONE
+    public void UpdateMaxPenguins()
+    {
+        maxP = (int)maxPengiunSlider.value;
+        maxPenguin.text = $"{maxP.ToString("0")}";
+    }
+    public void UpdateMaxFish()
+    {
+        maxF = (int)maxFishSlider.value;
+        maxFish.text = $"{maxF.ToString("0")}";
+    }
+    public void UpdateMaxFishFood()
+    {
+        maxFF = (int)maxFishFoodSlider.value;
+        maxFishFood.text = $"{maxFF.ToString("0")}";
+    }
 
     // PENGUIN
     public void UpdateMaxSpeedP()
@@ -410,6 +471,60 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    public void UpdateBackR()
+    {
+        backgroundR = backgroundRSlider.value;
+        BackR.text = $"{backgroundR.ToString("0.0")}";
+        UpdateBackgroundColor();
+    }
+    public void UpdateBackG()
+    {
+        backgroundG = backgroundGSlider.value;
+        BackG.text = $"{backgroundG.ToString("0.0")}";
+        UpdateBackgroundColor();
+    }
+    public void UpdateBackB()
+    {
+        backgroundB = backgroundBSlider.value;
+        BackB.text = $"{backgroundB.ToString("0.0")}";
+        UpdateBackgroundColor();
+    }
+
+    public void UpdateWallR()
+    {
+        wallR = wallRSlider.value;
+        WallR.text = $"{wallR.ToString("0.0")}";
+        UpdateMaterialColor();
+    }
+    public void UpdateWallG()
+    {
+        wallG = wallGSlider.value;
+        WallG.text = $"{wallG.ToString("0.0")}";
+        UpdateMaterialColor();
+    }
+    public void UpdateWallB()
+    {
+        wallB = wallBSlider.value;
+        WallB.text = $"{wallB.ToString("0.0")}";
+        UpdateMaterialColor();
+    }
+
+
+    public void UpdateBackgroundColor()
+    {
+        
+        mainCamera.backgroundColor = new Color(backgroundR / 255f, backgroundG / 255f, backgroundB / 255f);
+        
+    }
+
+    public void UpdateMaterialColor()
+    {
+        Color newColor = new Color(wallR / 255f, wallG / 255f, wallB / 255f);
+        objectMaterial.SetColor("Color_", newColor);
+        objectMaterial.SetColor("Color_", Color.white);
+        objectRenderer.material.color = new Color (wallR / 255f, wallG / 255f, wallB / 255f);
+        objectRenderer.material.color = Color.white;
+    }
 
 
 

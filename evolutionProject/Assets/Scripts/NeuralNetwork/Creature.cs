@@ -139,7 +139,7 @@ public class Creature : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle + transform.eulerAngles.z);
             Vector2 rayDirection = rotation * Vector2.up;
 
-            float offset = 0.01f * transform.localScale.y;
+            float offset = 0.1f * transform.localScale.y;
             Vector2 rayStart = (Vector2)transform.position + offset * rayDirection;
 
             //Debug.DrawRay(rayStart, rayDirection * viewDistance, Color.red); // Debug draw the ray
@@ -218,12 +218,6 @@ public class Creature : MonoBehaviour
         //change colors
         if (isColored)
         {
-            //Color newColor = new Color(energy / maxEnergy * 255, System.Math.Abs(FB * 85), System.Math.Abs(LR * 255));
-            //Color newColor = new Color((240 - energy/maxEnergy * 240)/255, (240 - System.Math.Min(totalOffspring, 240))/255,  (240 - elapsed/maxLifeSpan * 240)/255);
-            //GetComponent<SpriteRenderer>().color = newColor;
-            //Debug.Log((240 - 240 * energy / maxEnergy) + " " + (240 - System.Math.Min(totalOffspring, 240)) + " " + (240 - elapsed / maxLifeSpan * 240));
-            //Debug.Log(newColor);
-
             Color newColor = new Color(1f - elapsed / maxLifeSpan, 1f - energy / maxEnergy, 0.2f + System.Math.Min(totalOffspring*255/numberOfChildren, 255) / 255);
             renderer.material.color = newColor;
         }
