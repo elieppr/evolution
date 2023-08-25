@@ -9,8 +9,8 @@ public class FishSpawner : MonoBehaviour
     public int floorScale = 1;
     public Sprite Csprite;
 
-    public int minPenguins;
-    public SettingsManager settings;
+    public Counter counter;
+
     private void Start()
     {
         

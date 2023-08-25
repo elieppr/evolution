@@ -10,13 +10,8 @@ public class SettingsManager : MonoBehaviour
     // GENERAL
     public Camera mainCamera;
     public Material objectMaterial;
-
-    public MeshRenderer objectRenderer;
-    public GameObject objectMat;
-
     public Renderer objectRenderer;
     public GameObject materialobject;
-
     public Slider backgroundRSlider;
     public Slider backgroundGSlider;
     public Slider backgroundBSlider;
@@ -58,9 +53,6 @@ public class SettingsManager : MonoBehaviour
     public TMP_Text minPenguin;
     public TMP_Text minFish;
     public TMP_Text minFishFood;
-    public int spawnFF;
-    public Slider spawnFishFoodSlider;
-    public TMP_Text spawnFishFood;
 
     // PENGUIN
     public float maxSpeedP = 12;
@@ -212,23 +204,12 @@ public class SettingsManager : MonoBehaviour
         UpdateMutationAmountF();
         UpdateMutationChanceF();
 
-        backgroundRSlider.value = 90;
-        backgroundGSlider.value = 155;
-        backgroundBSlider.value = 255;
-        wallRSlider.value = 200;
-        wallGSlider.value = 200;
-        wallBSlider.value = 200;
-        wallMaterialColor = new Color(200, 200, 200);
-        UpdateBackgroundColor();
-        UpdateMaterialColor();
-
-        UpdateMaxPenguins();
-        UpdateMaxFish();
-        UpdateMaxFishFood();
-        UpdateMinPenguins();
-        UpdateMinFish();
-        UpdateMinFishFood();
-        UpdateStartFishFood();
+        backgroundRSlider.value = mainCamera.backgroundColor.r;
+        backgroundGSlider.value = mainCamera.backgroundColor.g;
+        backgroundBSlider.value = mainCamera.backgroundColor.b;
+        //materialRSlider.value = objectMaterial.color.r;
+        //materialGSlider.value = objectMaterial.color.g;
+        //materialBSlider.value = objectMaterial.color.b;
     }
 
     public void PauseGame()
@@ -257,28 +238,6 @@ public class SettingsManager : MonoBehaviour
     {
         maxFF = (int)maxFishFoodSlider.value;
         maxFishFood.text = $"{maxFF.ToString("0")}";
-    }
-
-    public void UpdateMinPenguins()
-    {
-        minP = (int)minPengiunSlider.value;
-        minPenguin.text = $"{minP.ToString("0")}";
-    }
-    public void UpdateMinFish()
-    {
-        minF = (int)minFishSlider.value;
-        minFish.text = $"{minF.ToString("0")}";
-    }
-    public void UpdateMinFishFood()
-    {
-        minFF = (int)minFishFoodSlider.value;
-        minFishFood.text = $"{minFF.ToString("0")}";
-    }
-
-    public void UpdateStartFishFood()
-    {
-        spawnFF = (int)spawnFishFoodSlider.value;
-        spawnFishFood.text = $"{spawnFF.ToString("0")}";
     }
 
     // PENGUIN
@@ -561,7 +520,11 @@ public class SettingsManager : MonoBehaviour
 
     public void UpdateMaterialColor()
     {
-        wallMaterialColor = new Color(wallR / 255f, wallG / 255f, wallB / 255f);
+        Color newColor = new Color(wallR / 255f, wallG / 255f, wallB / 255f);
+        objectMaterial.SetColor("Color_", newColor);
+        objectMaterial.SetColor("Color_", Color.white);
+        objectRenderer.material.color = new Color (wallR / 255f, wallG / 255f, wallB / 255f);
+        objectRenderer.material.color = Color.white;
         
         
     }

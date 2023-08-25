@@ -9,21 +9,21 @@ public class CreatureSpawner : MonoBehaviour
     public int floorScale = 1;
     public Sprite Csprite;
 
-    public int minPenguins;
-    public SettingsManager settings;
-
     public Counter counter;
 
+    private void Start()
+    {
+        
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        minPenguins = settings.minP;
         agentList = GameObject.FindGameObjectsWithTag("Agent");
 
         // if there are no agents in the scene, spawn one at a random location. 
         // This is to ensure that there is always at least one agent in the scene.
-        if (agentList.Length < minPenguins)
+        if (agentList.Length < 3)
         {
             SpawnCreature();
         }

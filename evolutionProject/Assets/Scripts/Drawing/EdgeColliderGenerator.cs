@@ -32,7 +32,7 @@ public class EdgeColliderGenerator {
 			
 		}
 		
-		//if (paths.Length > 0) 
+		if (paths.Length > 0) 
 			gameObject.AddComponent<BoxCollider2D>();
 
         // Set up edge colliders
