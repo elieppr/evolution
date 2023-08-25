@@ -10,8 +10,13 @@ public class SettingsManager : MonoBehaviour
     // GENERAL
     public Camera mainCamera;
     public Material objectMaterial;
+
     public MeshRenderer objectRenderer;
     public GameObject objectMat;
+
+    public Renderer objectRenderer;
+    public GameObject materialobject;
+
     public Slider backgroundRSlider;
     public Slider backgroundGSlider;
     public Slider backgroundBSlider;
