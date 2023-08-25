@@ -19,6 +19,7 @@ public class Fish : MonoBehaviour
     public float reproductionEnergyGained;
     public float reproductionEnergy = 0;
     public float reproductionEnergyThreshold;
+    //public float timeUntilReproduce = 50;
     public float FB = 0;
     public float LR = 0;
     public int numberOfChildren;
@@ -28,8 +29,8 @@ public class Fish : MonoBehaviour
     public float[] distances = new float[20];
     public int maxFish;
 
-    public float mutationAmount;
-    public float mutationChance;
+    public float mutationAmount = 0.8f;
+    public float mutationChance = 0.2f;
     public FishNN nn;
     public FishMovement movement;
 
@@ -74,37 +75,37 @@ public class Fish : MonoBehaviour
         renderer = GetComponent<Renderer>();
         startColor = renderer.material.color;
 
-        viewDistance = settings.viewDistanceF;
-        maxSize = settings.maxSizeF;
-        minSize = settings.minSizeF;
-        maxEnergy = settings.maxEnergyF;
-        energy = settings.startingEnergyF;
-        energyGained = settings.energyGainedF;
-        reproductionEnergyGained = settings.reproductionEnergyGainedF;
-        reproductionEnergyThreshold = settings.reproductionEnergyThresholdF;
-        numberOfChildren = settings.numberOfChildrenF;
-        maxLifeSpan = settings.maxLifeSpanF;
-        mutationAmount = settings.mutationAmountF;
-        mutationChance = settings.mutationChanceF;
-        maxFish = settings.maxF;
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energy = settings.startingEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxFish = settings.maxP;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
 
-        viewDistance = settings.viewDistanceF;
-        maxSize = settings.maxSizeF;
-        minSize = settings.minSizeF;
-        maxEnergy = settings.maxEnergyF;
-        energyGained = settings.energyGainedF;
-        reproductionEnergyGained = settings.reproductionEnergyGainedF;
-        reproductionEnergyThreshold = settings.reproductionEnergyThresholdF;
-        numberOfChildren = settings.numberOfChildrenF;
-        maxLifeSpan = settings.maxLifeSpanF;
-        mutationAmount = settings.mutationAmountF;
-        mutationChance = settings.mutationChanceF;
-        maxFish = settings.maxF;
+        viewDistance = settings.viewDistanceP;
+        maxSize = settings.maxSizeP;
+        minSize = settings.minSizeP;
+        maxEnergy = settings.maxEnergyP;
+        energyGained = settings.energyGainedP;
+        reproductionEnergyGained = settings.reproductionEnergyGainedP;
+        reproductionEnergyThreshold = settings.reproductionEnergyThresholdP;
+        numberOfChildren = settings.numberOfChildrenP;
+        maxLifeSpan = settings.maxLifeSpanP;
+        mutationAmount = settings.mutationAmountP;
+        mutationChance = settings.mutationChanceP;
+        maxFish = settings.maxP;
 
         //only do this once
         if (!isMutated)

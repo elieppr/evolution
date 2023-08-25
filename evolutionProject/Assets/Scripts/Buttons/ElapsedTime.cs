@@ -16,6 +16,6 @@ public class ElapsedTime : MonoBehaviour
     private void Update()
     {
         float elapsedTime = Time.time - startTime; // Calculate elapsed time
-        elapsedTimeText.text = $"{elapsedTime.ToString("0.000")}";
+        elapsedTimeText.text = $"{elapsedTime.ToString("0.000")} seconds";
     }
 }
