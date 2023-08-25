@@ -11,6 +11,7 @@ public class SettingsManager : MonoBehaviour
     public Camera mainCamera;
     public Material objectMaterial;
     public Renderer objectRenderer;
+    public GameObject materialobject;
     public Slider backgroundRSlider;
     public Slider backgroundGSlider;
     public Slider backgroundBSlider;
@@ -524,6 +525,8 @@ public class SettingsManager : MonoBehaviour
         objectMaterial.SetColor("Color_", Color.white);
         objectRenderer.material.color = new Color (wallR / 255f, wallG / 255f, wallB / 255f);
         objectRenderer.material.color = Color.white;
+        
+        
     }
 
 
