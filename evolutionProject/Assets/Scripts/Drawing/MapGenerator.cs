@@ -8,8 +8,8 @@ public class MapGenerator : MonoBehaviour
 {
 	[Header("Size settings")]
 	public int chunkResolution = 10;
-	public int numChunksX = 90;
-	public int numChunksY = 60;
+	public int numChunksX = 200;
+	public int numChunksY = 150;
 	public float mapWidth;
 	public bool colliderAroundBorder;
 
@@ -46,8 +46,12 @@ public class MapGenerator : MonoBehaviour
 
 	Vector2 brushPosLastFrame;
 
-	
-	void Start()
+	public SettingsManager colorSettings;
+
+    
+
+
+    void Start()
 	{
 		Init();
 		if (loadOnStart)
@@ -122,6 +126,8 @@ public class MapGenerator : MonoBehaviour
 
 	void Update()
 	{
+		mapMaterial.color = colorSettings.wallMaterialColor;
+
 		HandleBrush();
 
 		if (autoRefreshNoise)
@@ -441,7 +447,8 @@ public class MapGenerator : MonoBehaviour
 
 			mesh = new Mesh();
 			meshHolder.AddComponent<MeshFilter>().mesh = mesh;
-			meshHolder.AddComponent<MeshRenderer>().material = material;
+			var somematerial = meshHolder.AddComponent<MeshRenderer>().material = material;
+			//somematerial.color = colorSettings.wallMaterialColor;
 			//meshHolder.AddComponent<Rigidbody2D>();
 			//meshHolder.AddComponent(typeof(namespace.Collider2DOptimization));
 			//meshHolder.AddComponent<ShapeOptimizationHelper>();

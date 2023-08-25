@@ -7,14 +7,17 @@ public class FoodSpawner : MonoBehaviour
     public float spawnRate = 1;
     public int floorScale = 1;
     public GameObject myPrefab;
+    private GameObject[] agentList;
     public float timeElapsed = 0;
     public Counter counter;
     public SettingsManager settings;
     public LayerMask collisionLayer;
 
+    public int minFishFood;
+
     void Start()
     {
-        
+
         // Spawn food at random locations at the start of the game
         for (int i = 0; i < 200; i++)
         {
@@ -25,9 +28,16 @@ public class FoodSpawner : MonoBehaviour
     // FixedUpdate is called once per physics frame
     void FixedUpdate()
     {
+        agentList = GameObject.FindGameObjectsWithTag("FishFood");
+        // if there are no agents in the scene, spawn one at a random location. 
+        // This is to ensure that there is always at least one agent in the scene.
+        if (agentList.Length < settings.minFF)
+        {
+            SpawnFood();
+        }
         //spawn food every second with timeElapsed
         timeElapsed += Time.deltaTime;
-        if (timeElapsed >= spawnRate && counter.fishfood < settings.maxFF)
+        if (!(settings.spawnFF == 0) && timeElapsed >= 1/settings.spawnFF && counter.fishfood < settings.maxFF)
         {
             timeElapsed = timeElapsed % spawnRate;
             SpawnFood();
